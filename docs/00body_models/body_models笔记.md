@@ -1,4 +1,25 @@
 
+**body-models项目网站**
+
+[abcamiletto/body-models: Unified Python interface for parametric and articulated human, anatomical, and robot models across NumPy, PyTorch, and JAX, with optional Warp acceleration.](https://github.com/abcamiletto/body-models)
+```
+https://github.com/abcamiletto/body-models
+```
+
+相关论文：
+1. **SMPL**:A Skinned Multi-Person Linear Model
+2. **SMPLH**: Embodied Hands: Modeling and Capturing Hands and Bodies Together
+3. **SMPLX**: Expressive Body Capture: 3D Hands, Face, and Body from a Single Image
+4. **STAR**: A Sparse Trained Articulated Human Body Regressor
+5. **ANNY**: Human Mesh Modeling for Anny Body
+6. **MHR**:  Momentum Human Rig
+7. **SOMA**: Unifying Parametric Human Body Models
+8. **FLAME**: Learning a model of facial shape and expression from 4D scans
+9. **GNM Head**: A Generative aNthropometric Model of the human head
+10. **MANO**: Embodied Hands: Modeling and Capturing Hands and Bodies Together
+11. **SKEL**: From Skin to Skeleton: Towards Biomechanically Accurate 3D Digital Humans
+12. **GarmentMeasurements**: GarmentCodeData: A Dataset of 3D Made-to-Measure Garments With Sewing Patterns
+
 
 | ![](assets/Pasted%20image%2020260920111546.png) | ![](assets/Pasted%20image%2020260920111737.png) | ![](assets/Pasted%20image%2020260920111836.png) |     |
 | :---------------------------------------------: | :---------------------------------------------: | :---------------------------------------------: | --- |
@@ -10,12 +31,6 @@
 | ![](assets/Pasted%20image%2020260920112408.png) | ![](assets/Pasted%20image%2020260920112439.png) | ![](assets/Pasted%20image%2020260920112900.png) |     |
 |                      MANO                       |                      SKEL                       |                       GM                        |     |
 
-**body-models项目网站**
-
-[abcamiletto/body-models: Unified Python interface for parametric and articulated human, anatomical, and robot models across NumPy, PyTorch, and JAX, with optional Warp acceleration.](https://github.com/abcamiletto/body-models)
-```
-https://github.com/abcamiletto/body-models
-```
 
 
 ## 1 配置运行环境
@@ -121,7 +136,6 @@ garment-measurements
 3. FLAME：头脸（head + face）
 4. SMPL-H：SMPL + MANO
 5. SMPL-X：SMPL + MANO + FLAME
-
 
 
 ## 2 SMPL
