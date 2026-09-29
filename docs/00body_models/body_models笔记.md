@@ -115,12 +115,11 @@ garment-measurements
 
 
 这几个模型是一起的
-1. **SMPL**：身体（body）
-2. **MANO**：手（hands）
-3. **FLAME**：头脸（head + face）
-4. **SMPL-H**：SMPL + MANO
-5. **SMPL-X**：SMPL + MANO + FLAME
-
+1. SMPL：身体（body）
+2. MANO：手（hands）
+3. FLAME：头脸（head + face）
+4. SMPL-H：SMPL + MANO
+5. SMPL-X：SMPL + MANO + FLAME
 
 
 
@@ -1337,7 +1336,7 @@ global_translation torch.Size([1, 3])
 
 
 ### 4.5 可视化pose
-**但要特别注意：不同 SMPL-X 代码/数据集的 joint 顺序可能不一样。**
+**注意：不同 SMPL-X 代码/数据集的 joint 顺序可能不一样。**
 
 ```python
 # from body_models.smpl.numpy import SMPL
@@ -1661,8 +1660,6 @@ ps.show()
 |**SMPL-H / SMPL+H**|✅|✅|❌|❌|SMPL + MANO 双手|
 |**SMPL-X**|✅|✅|✅|✅|完整表达人体|
 |**STAR**|✅|❌|❌|❌|SMPL 的形变改进版|
-
-其中 SMPL-X 有 **10,475 个顶点、54 个关节**，包括手指、下颌和眼球等；STAR 则定位为 SMPL 的 drop-in replacement。 GitHub+1
 
 
 ### 5.2 SMPL、SMPLH、SMPLX、STAR
