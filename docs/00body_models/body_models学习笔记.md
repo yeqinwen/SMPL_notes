@@ -1,17 +1,17 @@
-![[Pasted image 20260920113248.png]]
+![[assets/Pasted image 20260920113248.png]]
 
 
 
 
-| ![[Pasted image 20260920111546.png]] | ![[Pasted image 20260920111737.png]] | ![[Pasted image 20260920111836.png]] |
-| :----------------------------------: | :----------------------------------: | :----------------------------------: |
-|                 SMPL                 |                SMPL-H                |                SMPL-X                |
-| ![[Pasted image 20260921182047.png]] | ![[Pasted image 20260920112051.png]] | ![[Pasted image 20260920112148.png]] |
-|             ANNY(四边形网格)              |                 MHR                  |                SOMA-X                |
-| ![[Pasted image 20260920112321.png]] | ![[Pasted image 20260920112344.png]] |                                      |
-|                FLAME                 |                 GNM                  |                                      |
-| ![[Pasted image 20260920112408.png]] | ![[Pasted image 20260920112439.png]] | ![[Pasted image 20260920112900.png]] |
-|                 MANO                 |                 SKEL                 |                  GM                  |
+| ![[assets/Pasted image 20260920111546.png]] | ![[assets/Pasted image 20260920111737.png]] | ![[assets/Pasted image 20260920111836.png]] |
+| :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: |
+|                    SMPL                     |                   SMPL-H                    |                   SMPL-X                    |
+| ![[assets/Pasted image 20260921182047.png]] | ![[assets/Pasted image 20260920112051.png]] | ![[assets/Pasted image 20260920112148.png]] |
+|                 ANNY(四边形网格)                 |                     MHR                     |                   SOMA-X                    |
+| ![[assets/Pasted image 20260920112321.png]] | ![[assets/Pasted image 20260920112344.png]] |                                             |
+|                    FLAME                    |                     GNM                     |                                             |
+| ![[assets/Pasted image 20260920112408.png]] | ![[assets/Pasted image 20260920112439.png]] | ![[assets/Pasted image 20260920112900.png]] |
+|                    MANO                     |                    SKEL                     |                     GM                      |
 
 
 [abcamiletto/body-models: Unified Python interface for parametric and articulated human, anatomical, and robot models across NumPy, PyTorch, and JAX, with optional Warp acceleration.](https://github.com/abcamiletto/body-models)
