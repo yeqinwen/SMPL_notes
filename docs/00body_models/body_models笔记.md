@@ -7,6 +7,7 @@ https://github.com/abcamiletto/body-models
 ```
 
 相关论文：
+
 1. SMPL：A Skinned Multi-Person Linear Model
 2. SMPLH： Embodied Hands: Modeling and Capturing Hands and Bodies Together
 3. SMPLX：Expressive Body Capture: 3D Hands, Face, and Body from a Single Image
