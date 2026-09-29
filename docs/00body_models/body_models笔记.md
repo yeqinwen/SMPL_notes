@@ -11,6 +11,7 @@
 |                      MANO                       |                      SKEL                       |                       GM                        |     |
 
 **body-models项目网站**
+
 [abcamiletto/body-models: Unified Python interface for parametric and articulated human, anatomical, and robot models across NumPy, PyTorch, and JAX, with optional Warp acceleration.](https://github.com/abcamiletto/body-models)
 ```
 https://github.com/abcamiletto/body-models
