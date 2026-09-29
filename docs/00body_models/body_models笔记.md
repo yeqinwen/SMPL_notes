@@ -115,6 +115,7 @@ garment-measurements
 
 
 这几个模型是一起的
+
 1. SMPL：身体（body）
 2. MANO：手（hands）
 3. FLAME：头脸（head + face）
