@@ -181,7 +181,7 @@ ps.show()
 <class 'numpy.ndarray'>
 ```
 
-![[Pasted image 20260920141403.png]]
+![[assets/Pasted image 20260920141403.png]]
 
 ### 2.2 生成人体torch_cpu
 
@@ -453,7 +453,7 @@ ps.show()
 ```
 
 
-![[Pasted image 20260920141339.png]]
+![[assets/Pasted image 20260920141339.png]]
 
 ![[Pasted image 20260929143913.png]]
 
