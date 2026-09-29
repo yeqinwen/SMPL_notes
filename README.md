@@ -1,6 +1,6 @@
 # Publish your Obsidian Notes
 
-[SMPL_notes](https://yeqinwen.github.io/xiaolan_notes/)，使用[MkDocs template](https://github.com/jobindjohn/obsidian-publish-mkdocs)构建，笔记网页保存在[github](https://github.com/yeqinwen/SMPL_notes)
+[SMPL_notes](https://yeqinwen.github.io/SMPL_notes/)，使用[MkDocs template](https://github.com/jobindjohn/obsidian-publish-mkdocs)构建，笔记网页保存在[github](https://github.com/yeqinwen/SMPL_notes)
 
 
 1. obsidian：记笔记
