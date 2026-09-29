@@ -1,3 +1,3 @@
-# SMPL学习笔记
+# SMPL_notes
 
 Hello World!

@@ -13,7 +13,7 @@
 | ![[assets/Pasted image 20260920112408.png]] | ![[assets/Pasted image 20260920112439.png]] | ![[assets/Pasted image 20260920112900.png]] |
 |                    MANO                     |                    SKEL                     |                     GM                      |
 
-
+**body-models项目网站**
 [abcamiletto/body-models: Unified Python interface for parametric and articulated human, anatomical, and robot models across NumPy, PyTorch, and JAX, with optional Warp acceleration.](https://github.com/abcamiletto/body-models)
 ```
 https://github.com/abcamiletto/body-models
@@ -117,11 +117,11 @@ garment-measurements
 
 
 这几个模型是一起的
-- **SMPL**：身体（body）
-- **MANO**：手（hands）
-- **FLAME**：头脸（head + face）
-- **SMPL-H**：SMPL + MANO
-- **SMPL-X**：SMPL + MANO + FLAME
+1. **SMPL**：身体（body）
+2. **MANO**：手（hands）
+3. **FLAME**：头脸（head + face）
+4. **SMPL-H**：SMPL + MANO
+5. **SMPL-X**：SMPL + MANO + FLAME
 
 
 
