@@ -1,15 +1,14 @@
 
 
-
-| ![[assets/Pasted image 20260920111546.png]] | ![[assets/Pasted image 20260920111737.png]] | ![[assets/Pasted image 20260920111836.png]] |
-| :-----------------------------------------: | :-----------------------------------------: | :-----------------------------------------: |
-|                    SMPL                     |                   SMPL-H                    |                   SMPL-X                    |
-| ![[assets/Pasted image 20260921182047.png]] | ![[assets/Pasted image 20260920112051.png]] | ![[assets/Pasted image 20260920112148.png]] |
-|                 ANNY(四边形网格)                 |                     MHR                     |                   SOMA-X                    |
-| ![[assets/Pasted image 20260920112321.png]] | ![[assets/Pasted image 20260920112344.png]] |                                             |
-|                    FLAME                    |                     GNM                     |                                             |
-| ![[assets/Pasted image 20260920112408.png]] | ![[assets/Pasted image 20260920112439.png]] | ![[assets/Pasted image 20260920112900.png]] |
-|                    MANO                     |                    SKEL                     |                     GM                      |
+| ![](Pasted%20image%2020260920111546.png) | ![](Pasted%20image%2020260920111737.png) | ![](Pasted%20image%2020260920111836.png) |
+| :--------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+|                   SMPL                   |                  SMPL-H                  |                  SMPL-X                  |
+| ![](Pasted%20image%2020260921182047.png) | ![](Pasted%20image%2020260920112051.png) | ![](Pasted%20image%2020260920112148.png) |
+|               ANNY(四边形网格)                |                   MHR                    |                  SOMA-X                  |
+| ![](Pasted%20image%2020260920112321.png) | ![](Pasted%20image%2020260920112344.png) |                                          |
+|                  FLAME                   |                   GNM                    |                                          |
+| ![](Pasted%20image%2020260920112408.png) | ![](Pasted%20image%2020260920112439.png) | ![](Pasted%20image%2020260920112900.png) |
+|                   MANO                   |                   SKEL                   |                    GM                    |
 
 **body-models项目网站**
 [abcamiletto/body-models: Unified Python interface for parametric and articulated human, anatomical, and robot models across NumPy, PyTorch, and JAX, with optional Warp acceleration.](https://github.com/abcamiletto/body-models)
@@ -179,7 +178,7 @@ ps.show()
 <class 'numpy.ndarray'>
 ```
 
-![[assets/Pasted image 20260920141403.png]]
+![](Pasted%20image%2020260920141403.png)
 
 ### 2.2 生成人体torch_cpu
 
@@ -451,9 +450,9 @@ ps.show()
 ```
 
 
-![[assets/Pasted image 20260920141339.png]]
+![](Pasted%20image%2020260920141339.png)
 
-![[Pasted image 20260929143913.png]]
+![](Pasted%20image%2020260929143913.png)
 
 
 ### 2.6 设置shape
@@ -509,7 +508,7 @@ ps.show()
 ```
 
 
-![[Pasted image 20260920141539.png]]
+![](Pasted%20image%2020260920141539.png)
 ### 2.7 生成不同shape
 
 ```python
@@ -566,7 +565,7 @@ ps.show()
 ```
 
 
-![[Pasted image 20260920142013.png]]
+![](Pasted%20image%2020260920142013.png)
 
 
 
@@ -625,7 +624,7 @@ ps.show()
 <class 'numpy.ndarray'>
 ```
 
-![[Pasted image 20260929142021.png]]
+![](Pasted%20image%2020260929142021.png)
 
 ### 3.2 生成人体torch_cpu
 ```python
@@ -967,7 +966,7 @@ torch.Size([1, 52, 4, 4])
 (52, 3)
 ```
 
-![[Pasted image 20260929152558.png]]
+![](Pasted%20image%2020260929152558.png)
 
 
 ### 3.6 设置shape
@@ -1021,7 +1020,7 @@ ps.show()
 
 ```
 
-![[Pasted image 20260929152955.png]]
+![](Pasted%20image%2020260929152955.png)
 
 
 ### 3.7 生成不同shape
@@ -1078,7 +1077,7 @@ ps.show()
 
 ```
 
-![[Pasted image 20260929153159.png]]
+![](Pasted%20image%2020260929153159.png)
 
 ## 4 SMPLX
 ### 4.1 生成人体numpy
@@ -1134,7 +1133,7 @@ ps.show()
 <class 'numpy.ndarray'>
 ```
 
-![[Pasted image 20260929153353.png]]
+![](Pasted%20image%2020260929153353.png)
 
 ### 4.2 生成人体torch_cpu
 ```python
@@ -1486,7 +1485,7 @@ ps.show()
 
 ```
 
-![[Pasted image 20260929154512.png]]
+![](Pasted%20image%2020260929154512.png)
 
 
 ### 4.6 设置shape
@@ -1584,7 +1583,7 @@ tensor([[ 1., -2.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
           0.,  0.,  0.,  0.,  0.,  0.]], device='cuda:0')
 ```
 
-![[Pasted image 20260929154940.png]]
+![](Pasted%20image%2020260929154940.png)
 
 
 ### 4.7 生成不同shape
@@ -1643,7 +1642,7 @@ ps.show()
 
 
 
-![[Pasted image 20260929155245.png]]
+![](Pasted%20image%2020260929155245.png)
 
 
 ## 5 SMPL家族人体说明
