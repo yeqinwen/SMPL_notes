@@ -153,9 +153,9 @@ vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape)  
+print(skeleton.shape)  
+print(faces.shape) 
 
 print(type(vertices))
 print(type(faces))
@@ -199,7 +199,6 @@ ps.show()
 ### 2.2 生成人体torch_cpu
 
 ```python
-# from body_models.smpl.numpy import SMPL
 from body_models.smpl.torch import SMPL
 import torch
 import polyscope as ps
@@ -211,9 +210,9 @@ vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape)  
+print(skeleton.shape)  
+print(faces.shape)  
 
 # 查看每个参数在cpu上还是gpu上
 for k, v in params.items():
@@ -258,7 +257,6 @@ global_translation cpu
 
 ### 2.3 生成人体torch_gpu
 ```python
-# from body_models.smpl.numpy import SMPL
 from body_models.smpl.torch import SMPL
 import torch
 import polyscope as ps
@@ -269,16 +267,16 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPL(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPL(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape)  
+print(skeleton.shape)  
+print(faces.shape)  
 
 for k, v in params.items():
     if torch.is_tensor(v):
@@ -333,7 +331,6 @@ global_translation cuda:0
 
 ### 2.4 人体参数
 ```python
-# from body_models.smpl.numpy import SMPL
 from body_models.smpl.torch import SMPL
 import torch
 import polyscope as ps
@@ -344,7 +341,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPL(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPL(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 # 打印参数
@@ -401,7 +398,6 @@ global_translation torch.Size([1, 3])
 
 ### 2.5 可视化pose
 ```python
-# from body_models.smpl.numpy import SMPL
 from body_models.smpl.torch import SMPL
 import torch
 import polyscope as ps
@@ -412,7 +408,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPL(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPL(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 skeleton = model.forward_skeleton(**params)
@@ -422,8 +418,8 @@ faces = model.faces
 vertices = vertices[0].cpu().numpy()
 faces = faces.cpu().numpy()
 
-J = skeleton[0].cpu().numpy()  # [24, 4, 4]
-joints = J[:, :3, 3]  # [24, 3]  每个关节的 (x, y, z)
+J = skeleton[0].cpu().numpy()  
+joints = J[:, :3, 3]  
 
 # SMPL 关节父子连接表 (parent, child)
 bones = [
@@ -474,7 +470,6 @@ ps.show()
 ### 2.6 设置shape
 
 ```python
-# from body_models.smpl.numpy import SMPL
 from body_models.smpl.torch import SMPL
 import torch
 import numpy as np
@@ -486,7 +481,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPL(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPL(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 # 设置shape参数
@@ -528,7 +523,6 @@ ps.show()
 ### 2.7 生成不同shape
 
 ```python
-# from body_models.smpl.numpy import SMPL
 from body_models.smpl.torch import SMPL
 import torch
 import numpy as np
@@ -540,7 +534,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPL(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPL(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 ps.init()
@@ -599,9 +593,9 @@ vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape) 
+print(skeleton.shape)  
+print(faces.shape)  
 
 print(type(vertices))
 print(type(faces))
@@ -655,9 +649,9 @@ vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape)  
+print(skeleton.shape)  
+print(faces.shape) 
 
 # 查看每个参数在cpu上还是gpu上
 for k, v in params.items():
@@ -712,16 +706,16 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLH(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLH(gender="female").to(device) 
 params = model.get_rest_pose(batch_dims=(1,))
 
 vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape)  
+print(skeleton.shape)  
+print(faces.shape)  
 
 for k, v in params.items():
     if torch.is_tensor(v):
@@ -787,7 +781,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLH(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLH(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 # 打印参数
@@ -850,7 +844,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLH(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLH(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 # 这里的参数是姿态参数，指的是旋转轴角
@@ -865,8 +859,8 @@ faces = model.faces
 vertices = vertices[0].cpu().numpy()
 faces = faces.cpu().numpy()
 
-J = skeleton[0].cpu().numpy()  # [24, 4, 4]
-joints = J[:, :3, 3]  # [24, 3]  每个关节的 (x, y, z)
+J = skeleton[0].cpu().numpy()  
+joints = J[:, :3, 3]  
 
 print(vertices.shape)
 print(faces.shape)
@@ -999,7 +993,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLH(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLH(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 # 设置shape参数
@@ -1053,7 +1047,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLH(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLH(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 ps.init()
@@ -1108,9 +1102,9 @@ vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape)  
+print(skeleton.shape)  
+print(faces.shape)  
 
 print(type(vertices))
 print(type(faces))
@@ -1164,9 +1158,9 @@ vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape)  
+print(skeleton.shape)  
+print(faces.shape)  
 
 # 查看每个参数在cpu上还是gpu上
 for k, v in params.items():
@@ -1224,16 +1218,16 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLX(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLX(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 vertices = model.forward_vertices(**params)
 skeleton = model.forward_skeleton(**params)
 faces = model.faces
 
-print(vertices.shape)  # [1, 6890, 3]
-print(skeleton.shape)  # ([1, 24, 4, 4]
-print(faces.shape)  # [13776, 3]
+print(vertices.shape) 
+print(skeleton.shape)  
+print(faces.shape)  
 
 for k, v in params.items():
     if torch.is_tensor(v):
@@ -1300,7 +1294,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLX(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLX(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 # 打印参数
@@ -1366,7 +1360,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLX(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLX(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 skeleton = model.forward_skeleton(**params)
@@ -1376,8 +1370,8 @@ faces = model.faces
 vertices = vertices[0].cpu().numpy()
 faces = faces.cpu().numpy()
 
-J = skeleton[0].cpu().numpy()  # [24, 4, 4]
-joints = J[:, :3, 3]  # [24, 3]  每个关节的 (x, y, z)
+J = skeleton[0].cpu().numpy()  
+joints = J[:, :3, 3]  
 
 # SMPL 关节父子连接表 (parent, child)
 bones = [
@@ -1517,7 +1511,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLX(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLX(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 # 设置shape参数
@@ -1616,7 +1610,7 @@ else:
     device = torch.device("cpu")
     print("WARNING: CPU only, this will be slow!")
 
-model = SMPLX(gender="female").to(device)  # 将SMPL模型放到GPU上
+model = SMPLX(gender="female").to(device)  
 params = model.get_rest_pose(batch_dims=(1,))
 
 ps.init()
@@ -1893,3 +1887,1810 @@ SMPL-X 的 10,475 vertices 和 54 joints 是官方明确给出的。 GitHub
 3. **SMPL-X解决如何统一描述身体 + 手 + 脸 + 表情？**
 4. **STAR解决如何让 SMPL 的身体形变更加局部、紧凑、真实？**
 
+
+## 6 ANNY
+### 6.1 生成人体numpy
+```python
+from body_models.anny.numpy import ANNY
+import polyscope as ps
+
+model = ANNY()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("z_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_y_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+(1, 13718, 3)
+(1, 163, 4, 4)
+(13710, 4)
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+```
+
+![](assets/Pasted%20image%2020260930141536.png)
+
+
+### 6.2 生成人体torch_cpu
+```python
+from body_models.anny.torch import ANNY
+import torch
+import polyscope as ps
+
+model = ANNY()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+# 查看每个参数在cpu上还是gpu上
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("z_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_y_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 13718, 3])
+torch.Size([1, 163, 4, 4])
+torch.Size([13710, 4])
+shape cpu
+body_pose cpu
+head_pose cpu
+hand_pose cpu
+global_rotation cpu
+global_translation cpu
+```
+
+
+### 6.3 生成人体torch_gpu
+```python
+from body_models.anny.torch import ANNY
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = ANNY().to(device)  
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)  
+
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+# 生成的顶点、面、骨骼数据都是gpu tensor，需要使用.cpu().numpy()进行转化，再可视化
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("z_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_y_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 13718, 3])
+torch.Size([1, 163, 4, 4])
+torch.Size([13710, 4])
+shape cuda:0
+body_pose cuda:0
+head_pose cuda:0
+hand_pose cuda:0
+global_rotation cuda:0
+global_translation cuda:0
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+```
+
+### 6.4 人体参数
+```python
+from body_models.anny.torch import ANNY
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = ANNY().to(device)  
+params = model.get_rest_pose(batch_dims=(1,))
+
+# 打印参数
+print(params.keys())
+for k, v in params.items():
+    print(k, v.shape)
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("z_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_y_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+dict_keys(['shape', 'body_pose', 'head_pose', 'hand_pose', 'global_rotation', 'global_translation'])
+shape torch.Size([1, 6])
+body_pose torch.Size([1, 64, 3])
+head_pose torch.Size([1, 60, 3])
+hand_pose torch.Size([1, 38, 3])
+global_rotation torch.Size([1, 3])
+global_translation torch.Size([1, 3])
+torch.Size([1, 64, 3])
+torch.Size([1, 60, 3])
+torch.Size([1, 38, 3])
+```
+
+ANNY只有6个shape参数
+ANNY有133个关节点
+
+### 6.5 可视化pose
+
+```python
+from body_models.anny.torch import ANNY
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = ANNY().to(device)  
+params = model.get_rest_pose(batch_dims=(1,))
+
+skeleton = model.forward_skeleton(**params)
+vertices = model.forward_vertices(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+J = skeleton[0].cpu().numpy()
+joints = J[:, :3, 3]
+
+
+print(joints)
+print(joints.shape)
+
+# 关节父子连接表 (parent, child)
+# bones = [ ]
+
+
+ps.init()
+ps.set_build_gui(False)
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         transparency=0.5
+                         # material="flat"
+                         )
+
+ps.register_point_cloud("j", joints, radius=0.005, color=[1, 0, 0])
+
+# ps.register_curve_network("bone", joints, bones, radius=0.0015,
+#                           color=[255 / 255, 0, 218 / 255])
+
+# ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("z_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_y_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+
+```python
+(163, 3) # 关节点数据
+```
+
+![](assets/Pasted%20image%2020260930142504.png)
+
+
+### 6.6 设置Shape
+```python
+from body_models.anny.torch import ANNY
+import torch
+import numpy as np
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = ANNY().to(device)  
+params = model.get_rest_pose(batch_dims=(1,))
+
+print(params["shape"])
+# shape参数的初始值是
+# tensor([[0.5000, 0.5000, 0.5000, 0.5000, 0.5000, 0.5000]], device='cuda:0')
+
+# 设置shape参数
+params["shape"][0,1] = 0
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.set_build_gui(False)
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("z_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_y_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020260930143614.png)
+
+
+### 6.7 生成不同shape
+
+```python
+from body_models.anny.torch import ANNY
+import torch
+import numpy as np
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = ANNY().to(device) 
+params = model.get_rest_pose(batch_dims=(1,))
+
+ps.init()
+ps.set_build_gui(False)
+
+# params["shape"] 为 torch.zeros((1,10),dtype=torch.int64, device=device)
+for i in range(10):
+    params["shape"][0, 1] = i / 10
+
+    vertices = model.forward_vertices(**params)
+    skeleton = model.forward_skeleton(**params)
+    faces = model.faces
+
+    vertices = vertices[0].cpu().numpy()
+    faces = faces.cpu().numpy()
+
+    vertices = vertices + np.array([0, i * 0.5, 0])
+
+    ps.register_surface_mesh("mesh_{}".format(i / 10), vertices, faces,
+                             color=[0, 91 / 255, 255 / 255],
+                             edge_width=0.3,
+                             edge_color=[1, 1, 1],
+                             smooth_shade=True,
+                             # material="flat"
+                             )
+
+ps.set_view_projection_mode("orthographic")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("z_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_x_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020260930143713.png)
+
+## 7 MHR
+### 7.1 生成人体numpy
+```python
+from body_models.mhr.numpy import MHR
+import polyscope as ps
+
+model = MHR()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+(1, 18439, 3)
+(1, 127, 4, 4)
+(36874, 3)
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+```
+
+![](assets/Pasted%20image%2020260930152052.png)
+
+
+
+### 7.2 生成人体torch_cpu
+```python
+from body_models.mhr.torch import MHR
+import torch
+import polyscope as ps
+
+model = MHR()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+# 查看每个参数在cpu上还是gpu上
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 18439, 3])
+torch.Size([1, 127, 4, 4])
+torch.Size([36874, 3])
+shape cpu
+expression cpu
+body_pose cpu
+head_pose cpu
+hand_pose cpu
+global_rotation cpu
+global_translation cpu
+```
+
+
+### 7.3 生成人体torch_gpu
+```python
+from body_models.mhr.torch import MHR
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = MHR().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+# 生成的顶点、面、骨骼数据都是gpu tensor，需要使用.cpu().numpy()进行转化，再可视化
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 18439, 3])
+torch.Size([1, 127, 4, 4])
+torch.Size([36874, 3])
+shape cuda:0
+expression cuda:0
+body_pose cuda:0
+head_pose cuda:0
+hand_pose cuda:0
+global_rotation cuda:0
+global_translation cuda:0
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+```
+
+
+### 7.4 人体参数
+```python
+from body_models.mhr.torch import MHR
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = MHR().to(device)  # 将SMPL模型放到GPU上
+params = model.get_rest_pose(batch_dims=(1,))
+
+# 打印参数
+print(params.keys())
+for k, v in params.items():
+    print(k, v.shape)
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+dict_keys(['shape', 'expression', 'body_pose', 'head_pose', 'hand_pose', 'global_rotation', 'global_translation'])
+shape torch.Size([1, 45])
+expression torch.Size([1, 72])
+body_pose torch.Size([1, 94])
+head_pose torch.Size([1, 6])
+hand_pose torch.Size([1, 104])
+global_rotation torch.Size([1, 3])
+global_translation torch.Size([1, 3])
+```
+
+MHR人体体形参数有45个值
+
+
+### 7.5 可视化pose
+```python
+from body_models.mhr.torch import MHR  
+import torch  
+import polyscope as ps  
+  
+if torch.cuda.is_available():  
+    device = torch.device("cuda:0")  
+else:  
+    device = torch.device("cpu")  
+    print("WARNING: CPU only, this will be slow!")  
+  
+model = MHR().to(device)  # 将SMPL模型放到GPU上  
+params = model.get_rest_pose(batch_dims=(1,))  
+  
+skeleton = model.forward_skeleton(**params)  
+vertices = model.forward_vertices(**params)  
+faces = model.faces  
+  
+vertices = vertices[0].cpu().numpy()  
+faces = faces.cpu().numpy()  
+  
+J = skeleton[0].cpu().numpy()  
+joints = J[:, :3, 3]  
+  
+  
+print(joints)  
+print(joints.shape)  
+  
+# 关节父子连接表 (parent, child)# bones = [ ]  
+  
+  
+ps.init()  
+ps.set_build_gui(False)  
+ps.register_surface_mesh("mesh", vertices, faces,  
+                         color=[0, 91 / 255, 255 / 255],  
+                         edge_width=0.003,  
+                         edge_color=[1, 1, 1],  
+                         smooth_shade=True,  
+                         transparency=0.5  
+                         # material="flat"  
+                         )  
+  
+ps.register_point_cloud("j", joints, radius=0.005, color=[1, 0, 0])  
+  
+# ps.register_curve_network("bone", joints, bones, radius=0.0015,  
+#                           color=[255 / 255, 0, 218 / 255])  
+  
+# ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影  
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']  
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']  
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度  
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度  
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度  
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）  
+ps.set_front_dir('z_front')  # 设置z轴正方向向前  
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰  
+ps.show()
+```
+
+打印：
+```python
+(127, 3) # MHR人体关节点数
+```
+
+![](assets/Pasted%20image%2020260930152425.png)
+
+### 7.6 设置Shape
+```python
+from body_models.mhr.torch import MHR
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = MHR().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+print(params["shape"])
+print(params["shape"].shape)  # torch.Size([1, 45])
+
+# 设置shape参数
+params["shape"][0, 0] = 1
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.set_build_gui(False)
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020260930152554.png)
+
+
+### 7.7 生成不同shape
+```python
+from body_models.mhr.torch import MHR
+import torch
+import numpy as np
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = MHR().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+ps.init()
+ps.set_build_gui(False)
+
+for i in range(10):
+    params["shape"][0, 0] = i / 10
+
+    vertices = model.forward_vertices(**params)
+    skeleton = model.forward_skeleton(**params)
+    faces = model.faces
+
+    vertices = vertices[0].cpu().numpy()
+    faces = faces.cpu().numpy()
+
+    vertices = vertices + np.array([0, 0, i * 0.5])
+
+    ps.register_surface_mesh("mesh_{}".format(i / 10), vertices, faces,
+                             color=[0, 91 / 255, 255 / 255],
+                             edge_width=0.003,
+                             edge_color=[1, 1, 1],
+                             smooth_shade=True,
+                             # material="flat"
+                             )
+
+ps.set_view_projection_mode("orthographic")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_x_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020260930152711.png)
+
+## 8 SOMA
+### 8.1 生成人体numpy
+```python
+from body_models.soma.numpy import SOMA
+import polyscope as ps
+
+model = SOMA()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+(1, 18056, 3)
+(1, 77, 4, 4)
+(36108, 3)
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+```
+
+![](assets/Pasted%20image%2020260930152844.png)
+
+
+### 8.2 生成人体torch_cpu
+```python
+from body_models.soma.torch import SOMA
+import torch
+import polyscope as ps
+
+model = SOMA()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+# 查看每个参数在cpu上还是gpu上
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+
+```
+
+打印：
+```python
+torch.Size([1, 18056, 3])
+torch.Size([1, 77, 4, 4])
+torch.Size([36108, 3])
+shape cpu
+body_pose cpu
+head_pose cpu
+hand_pose cpu
+global_rotation cpu
+global_translation cpu
+```
+
+
+### 8.3 生成人体torch_gpu
+```python
+from body_models.soma.torch import SOMA
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = SOMA().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+# 生成的顶点、面、骨骼数据都是gpu tensor，需要使用.cpu().numpy()进行转化，再可视化
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 18056, 3])
+torch.Size([1, 77, 4, 4])
+torch.Size([36108, 3])
+shape cuda:0
+body_pose cuda:0
+head_pose cuda:0
+hand_pose cuda:0
+global_rotation cuda:0
+global_translation cuda:0
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+```
+
+
+### 8.4 人体参数
+```python
+from body_models.soma.torch import SOMA
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = SOMA().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+# 打印参数
+print(params.keys())
+for k, v in params.items():
+    print(k, v.shape)
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+dict_keys(['shape', 'body_pose', 'head_pose', 'hand_pose', 'global_rotation', 'global_translation'])
+shape torch.Size([1, 128])
+body_pose torch.Size([1, 23, 3])
+head_pose torch.Size([1, 5, 3])
+hand_pose torch.Size([1, 48, 3])
+global_rotation torch.Size([1, 3])
+global_translation torch.Size([1, 3])
+```
+
+### 8.5 可视化pose
+```python
+from body_models.soma.torch import SOMA
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = SOMA().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+skeleton = model.forward_skeleton(**params)
+vertices = model.forward_vertices(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+J = skeleton[0].cpu().numpy()
+joints = J[:, :3, 3]
+
+
+print(joints)
+print(joints.shape)
+
+# 关节父子连接表 (parent, child)
+# bones = [ ]
+
+
+ps.init()
+ps.set_build_gui(False)
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         transparency=0.5
+                         # material="flat"
+                         )
+
+ps.register_point_cloud("j", joints, radius=0.005, color=[1, 0, 0])
+
+# ps.register_curve_network("bone", joints, bones, radius=0.0015,
+#                           color=[255 / 255, 0, 218 / 255])
+
+# ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+```python
+(77, 3) # soma人体关节
+```
+
+![](assets/Pasted%20image%2020260930153728.png)
+
+
+### 8.6 设置Shape
+```python
+from body_models.soma.torch import SOMA
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = SOMA().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+print(params["shape"])
+print(params["shape"].shape)  # torch.Size([1, 45])
+
+# 设置shape参数
+params["shape"][0, 0] = 2
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.set_build_gui(False)
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 128]) # soma人体有128个shape参数
+```
+
+### 8.7 生成不同shape
+```python
+from body_models.soma.torch import SOMA
+import torch
+import numpy as np
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = SOMA().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+ps.init()
+ps.set_build_gui(False)
+
+for i in range(10):
+    params["shape"][0, 1] = i / 5
+
+    vertices = model.forward_vertices(**params)
+    skeleton = model.forward_skeleton(**params)
+    faces = model.faces
+
+    vertices = vertices[0].cpu().numpy()
+    faces = faces.cpu().numpy()
+
+    vertices = vertices + np.array([0, 0, i * 0.5])
+
+    ps.register_surface_mesh("mesh_{}".format(i / 5), vertices, faces,
+                             color=[0, 91 / 255, 255 / 255],
+                             edge_width=0.003,
+                             edge_color=[1, 1, 1],
+                             smooth_shade=True,
+                             # material="flat"
+                             )
+
+ps.set_view_projection_mode("orthographic")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_x_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020260930154250.png)
+
+
+## 9 FLAME
+### 9.1 生成人体numpy
+```python
+from body_models.flame.numpy import FLAME
+import polyscope as ps
+
+model = FLAME()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+(1, 5023, 3)
+(1, 5, 4, 4)
+(9976, 3)
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+<class 'numpy.ndarray'>
+```
+
+![](assets/Pasted%20image%2020260930155216.png)
+
+### 9.2 生成人体torch_cpu
+```python
+from body_models.flame.torch import FLAME
+import torch
+import polyscope as ps
+
+model = FLAME()
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+# 查看每个参数在cpu上还是gpu上
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices[0], faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 5023, 3])
+torch.Size([1, 5, 4, 4])
+torch.Size([9976, 3])
+shape cpu
+expression cpu
+head_pose cpu
+head_rotation cpu
+global_rotation cpu
+global_translation cpu
+```
+
+### 9.3 生成人体torch_gpu
+```python
+from body_models.flame.torch import FLAME
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = FLAME().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+print(vertices.shape)
+print(skeleton.shape)
+print(faces.shape)
+
+for k, v in params.items():
+    if torch.is_tensor(v):
+        print(k, v.device)
+
+# 生成的顶点、面、骨骼数据都是gpu tensor，需要使用.cpu().numpy()进行转化，再可视化
+print(type(vertices))
+print(type(faces))
+print(type(skeleton))
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.set_build_gui(False)
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 5023, 3])
+torch.Size([1, 5, 4, 4])
+torch.Size([9976, 3])
+shape cuda:0
+expression cuda:0
+head_pose cuda:0
+head_rotation cuda:0
+global_rotation cuda:0
+global_translation cuda:0
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+<class 'torch.Tensor'>
+```
+
+### 9.4 人体参数
+```python
+from body_models.flame.torch import FLAME
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = FLAME().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+# 打印参数
+print(params.keys())
+for k, v in params.items():
+    print(k, v.shape)
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+dict_keys(['shape', 'expression', 'head_pose', 'head_rotation', 'global_rotation', 'global_translation'])
+shape torch.Size([1, 300])
+expression torch.Size([1, 100])
+head_pose torch.Size([1, 4, 3])
+head_rotation torch.Size([1, 3])
+global_rotation torch.Size([1, 3])
+global_translation torch.Size([1, 3])
+```
+
+
+### 9.5 可视化pose
+```python
+from body_models.flame.torch import FLAME
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = FLAME().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+skeleton = model.forward_skeleton(**params)
+vertices = model.forward_vertices(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+J = skeleton[0].cpu().numpy()
+joints = J[:, :3, 3]
+
+
+print(joints)
+print(joints.shape)
+
+# 关节父子连接表 (parent, child)
+# bones = [ ]
+
+
+ps.init()
+ps.set_build_gui(False)
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         transparency=0.5
+                         # material="flat"
+                         )
+
+ps.register_point_cloud("j", joints, radius=0.005, color=[1, 0, 0])
+
+# ps.register_curve_network("bone", joints, bones, radius=0.0015,
+#                           color=[255 / 255, 0, 218 / 255])
+
+# ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+(5, 3) # flame有5个关节点
+```
+
+![](assets/Pasted%20image%2020260930155628.png)
+
+### 9.6 设置Shape
+```python
+from body_models.flame.torch import FLAME
+import torch
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = FLAME().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+print(params["shape"])
+print(params["shape"].shape)  # torch.Size([1, 45])
+
+# 设置shape参数
+params["shape"][0, 0] = 5
+
+vertices = model.forward_vertices(**params)
+skeleton = model.forward_skeleton(**params)
+faces = model.faces
+
+vertices = vertices[0].cpu().numpy()
+faces = faces.cpu().numpy()
+
+ps.init()
+ps.set_build_gui(False)
+ps.register_surface_mesh("mesh", vertices, faces,
+                         color=[0, 91 / 255, 255 / 255],
+                         edge_width=0.003,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+torch.Size([1, 300]) # flame有300个shape参数
+```
+
+![](assets/Pasted%20image%2020260930155837.png)
+
+
+### 9.7 生成不同shape
+```python
+from body_models.flame.torch import FLAME
+import torch
+import numpy as np
+import polyscope as ps
+
+if torch.cuda.is_available():
+    device = torch.device("cuda:0")
+else:
+    device = torch.device("cpu")
+    print("WARNING: CPU only, this will be slow!")
+
+model = FLAME().to(device)
+params = model.get_rest_pose(batch_dims=(1,))
+
+ps.init()
+ps.set_build_gui(False)
+
+for i in range(10):
+    params["shape"][0, 1] = i
+
+    vertices = model.forward_vertices(**params)
+    skeleton = model.forward_skeleton(**params)
+    faces = model.faces
+
+    vertices = vertices[0].cpu().numpy()
+    faces = faces.cpu().numpy()
+
+    vertices = vertices + np.array([0, 0, i * 0.3])
+
+    ps.register_surface_mesh("mesh_{}".format(i), vertices, faces,
+                             color=[0, 91 / 255, 255 / 255],
+                             edge_width=0.003,
+                             edge_color=[1, 1, 1],
+                             smooth_shade=True,
+                             # material="flat"
+                             )
+
+ps.set_view_projection_mode("orthographic")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('neg_x_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020260930160052.png)
+
+
+## 10 GNM Head
+### 10.1 生成人体numpy
+
+### 10.2 生成人体torch_cpu
+
+
+### 10.3 生成人体torch_gpu
+
+
+### 10.4 人体参数
+
+### 10.5 可视化pose
+
+### 10.6 设置Shape
+
+### 10.7 生成不同shape
+
+## 11 mano
+### 11.1 生成人体numpy
+
+### 11.2 生成人体torch_cpu
+
+
+### 11.3 生成人体torch_gpu
+
+
+### 11.4 人体参数
+
+### 11.5 可视化pose
+
+### 11.6 设置Shape
+
+### 11.7 生成不同shape
+
+
+## 12 SKEL
+### 12.1 生成人体numpy
+
+### 12.2 生成人体torch_cpu
+
+
+### 12.3 生成人体torch_gpu
+
+
+### 12.4 人体参数
+
+### 12.5 可视化pose
+
+### 12.6 设置Shape
+
+### 12.7 生成不同shape
+
+
+## 13 GarmentMeasurements
+### 13.1 生成人体numpy
+
+### 13.2 生成人体torch_cpu
+
+
+### 13.3 生成人体torch_gpu
+
+
+### 13.4 人体参数
+
+### 13.5 可视化pose
+
+### 13.6 设置Shape
+
+### 13.7 生成不同shape
