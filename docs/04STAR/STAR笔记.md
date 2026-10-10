@@ -578,7 +578,9 @@ f = model.f.astype(np.int32)
 ```
 
 **方法2**：只给参数设置device
+
 在STAR模型的内部，device是根据pose获得的
+
 也就是说，如果pose参数是GPU向量，就使用了cuda加速
 
 ```python
