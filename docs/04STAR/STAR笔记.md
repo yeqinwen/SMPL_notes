@@ -3,7 +3,7 @@
 
 论文：STAR: Sparse Trained Articulated Human Body Regressor
 
-官网：[STAR](https://star.is.tue.mpg.de/) 从官网下载star模型的models文件
+官网：[STAR](https://star.is.tue.mpg.de/)  从官网下载star模型的model文件
 
  **STAR 1.1** ：This is the STAR model used in the ECCV2020 paper - A Sparse Trained Articulated Human Body Regressor. **We provide a male, female and neutral model with the full 300 Principal component shape space for research purposes**. 
 
@@ -439,7 +439,7 @@ ps.show()
 
 ### 2.7 可视化蒙皮权重-方法2
 
-配色参数这个代码： https://github.com/PeizhuoLi/neural-blend-shapes
+配色参考这个代码： https://github.com/PeizhuoLi/neural-blend-shapes
 
 ```python
 from star.pytorch.star import STAR
@@ -597,3 +597,742 @@ model = star.forward(poses, betas, trans)
 v = model[0].cpu().numpy()
 f = model.f.astype("int32")
 ```
+
+## 3 star人体分区
+
+### 3.1 可视化star人体分区
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+import json
+
+np.set_printoptions(suppress=True)
+
+# 1、初始化star人体
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+
+# T姿态
+# poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+
+# A姿态
+A_pose_np = np.zeros((1, 72))
+A_pose_np[:, 3 * 1 + 2] = 0.1  # 右脚
+A_pose_np[:, 3 * 2 + 2] = -0.1  # 左脚
+A_pose_np[0, 3 * 13 + 2] = -0.2  # 左手
+A_pose_np[0, 3 * 14 + 2] = 0.2  # 右手
+A_pose_np[0, 3 * 16 + 2] = -0.8  # 左臂
+A_pose_np[0, 3 * 17 + 2] = 0.8  # 右臂
+
+poses = torch.cuda.FloatTensor(A_pose_np)
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+# 使用姿态参数poses、体形参数betas和平移向量trans，生成star人体
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+V = model[0].cpu().numpy()
+F = model.f.astype("int32")
+
+with open('smpl_vert_segmentation.json') as fin:
+    vertex_groups = json.load(fin)
+
+ps.init()
+ps.set_window_size(1200,800)
+ps.register_surface_mesh("mesh", V, F, color=np.array([0, 91, 255]) / 255,
+                         edge_color=[1, 1, 1], edge_width=0.1)
+
+r = 0.003
+ps.register_point_cloud("rightHand", V[vertex_groups['rightHand']], radius=r)
+ps.register_point_cloud("rightUpLeg", V[vertex_groups['rightUpLeg']], radius=r)
+ps.register_point_cloud("leftArm ", V[vertex_groups['leftArm']], radius=r)
+ps.register_point_cloud("leftLeg", V[vertex_groups['leftLeg']], radius=r)
+ps.register_point_cloud("leftToeBase", V[vertex_groups['leftToeBase']], radius=r)
+ps.register_point_cloud("leftFoot", V[vertex_groups['leftFoot']], radius=r)
+ps.register_point_cloud("spine1", V[vertex_groups['spine1']], radius=r)
+ps.register_point_cloud("spine2", V[vertex_groups['spine2']], radius=r)
+ps.register_point_cloud("leftShoulder", V[vertex_groups['leftShoulder']], radius=r)
+ps.register_point_cloud("rightShoulder", V[vertex_groups['rightShoulder']], radius=r)
+ps.register_point_cloud("rightFoot ", V[vertex_groups['rightFoot']], radius=r)
+ps.register_point_cloud("head", V[vertex_groups['head']], radius=r)
+ps.register_point_cloud("rightArm", V[vertex_groups['rightArm']], radius=r)
+ps.register_point_cloud("leftHandIndex1", V[vertex_groups['leftHandIndex1']], radius=r)
+ps.register_point_cloud("rightLeg", V[vertex_groups['rightLeg']], radius=r)
+ps.register_point_cloud("rightHandIndex1", V[vertex_groups['rightHandIndex1']], radius=r)
+ps.register_point_cloud("leftForeArm", V[vertex_groups['leftForeArm']], radius=r)
+ps.register_point_cloud("rightForeArm", V[vertex_groups['rightForeArm']], radius=r)
+ps.register_point_cloud("neck", V[vertex_groups['neck']], radius=r)
+ps.register_point_cloud("rightToeBase", V[vertex_groups['rightToeBase']], radius=r)
+ps.register_point_cloud("spine", V[vertex_groups['spine']], radius=r)
+ps.register_point_cloud("leftUpLeg", V[vertex_groups['leftUpLeg']], radius=r)
+ps.register_point_cloud("leftHand", V[vertex_groups['leftHand']], radius=r)
+ps.register_point_cloud("hips", V[vertex_groups['hips']], radius=r)
+
+# ps.set_build_gui(False)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020261010142447.png)
+
+### 3.2 可视化star人体分区-简化版
+
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+import json
+
+np.set_printoptions(suppress=True)
+
+# 1、初始化star人体
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+
+# T姿态
+# poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+
+# A姿态
+A_pose_np = np.zeros((1, 72))
+A_pose_np[:, 3 * 1 + 2] = 0.1  # 右脚
+A_pose_np[:, 3 * 2 + 2] = -0.1  # 左脚
+A_pose_np[0, 3 * 13 + 2] = -0.2  # 左手
+A_pose_np[0, 3 * 14 + 2] = 0.2  # 右手
+A_pose_np[0, 3 * 16 + 2] = -0.8  # 左臂
+A_pose_np[0, 3 * 17 + 2] = 0.8  # 右臂
+
+poses = torch.cuda.FloatTensor(A_pose_np)
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+# 使用姿态参数poses、体形参数betas和平移向量trans，生成star人体
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+V = model[0].cpu().numpy()
+F = model.f.astype("int32")
+
+with open('smpl_vert_segmentation.json') as fin:
+    vertex_groups = json.load(fin)
+
+print(type(vertex_groups))
+print(vertex_groups.keys())
+
+ps.init()
+ps.set_window_size(1200, 800)
+ps.register_surface_mesh("mesh", V, F, color=np.array([0, 91, 255]) / 255,
+                         edge_color=[1, 1, 1], edge_width=0.1)
+
+r = 0.003
+
+for k in vertex_groups.keys():
+    ps.register_point_cloud("{}".format(k), V[vertex_groups[k]], radius=r)
+
+# ps.set_build_gui(False)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+<class 'dict'>
+dict_keys(['rightHand', 'rightUpLeg', 'leftArm', 'leftLeg', 'leftToeBase', 'leftFoot', 'spine1', 'spine2', 'leftShoulder', 'rightShoulder', 'rightFoot', 'head', 'rightArm', 'leftHandIndex1', 'rightLeg', 'rightHandIndex1', 'leftForeArm', 'rightForeArm', 'neck', 'rightToeBase', 'spine', 'leftUpLeg', 'leftHand', 'hips'])
+```
+
+### 3.3 组合分区顶点
+
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+import json
+
+np.set_printoptions(suppress=True)
+
+# 1、初始化star人体
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+
+# T姿态
+# poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+
+# A姿态
+A_pose_np = np.zeros((1, 72))
+A_pose_np[:, 3 * 1 + 2] = 0.1  # 右脚
+A_pose_np[:, 3 * 2 + 2] = -0.1  # 左脚
+A_pose_np[0, 3 * 13 + 2] = -0.2  # 左手
+A_pose_np[0, 3 * 14 + 2] = 0.2  # 右手
+A_pose_np[0, 3 * 16 + 2] = -0.8  # 左臂
+A_pose_np[0, 3 * 17 + 2] = 0.8  # 右臂
+
+poses = torch.cuda.FloatTensor(A_pose_np)
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+# 使用姿态参数poses、体形参数betas和平移向量trans，生成star人体
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+V = model[0].cpu().numpy()
+F = model.f.astype("int32")
+
+with open('smpl_vert_segmentation.json') as fin:
+    vertex_groups = json.load(fin)
+
+ps.init()
+ps.register_surface_mesh("smpl", V, F, color=np.array([0, 91, 255]) / 255,
+                         edge_color=[1, 1, 1], edge_width=0.1)
+
+r = 0.004
+
+# 头和颈
+head_and_neck_id = vertex_groups["head"] + vertex_groups["neck"]
+ps.register_point_cloud("head_and_neck", V[head_and_neck_id], radius=r, color=[100 / 255, 0, 255 / 255])
+
+# 身体
+main_body_id = (
+        vertex_groups['rightShoulder'] +
+        vertex_groups['leftShoulder'] +
+        vertex_groups["spine2"] +
+        vertex_groups['spine1'] +
+        vertex_groups['spine'] +
+        vertex_groups['hips'] +
+        vertex_groups['rightUpLeg'] +
+        vertex_groups['leftUpLeg'] +
+        vertex_groups['rightLeg'] +
+        vertex_groups['leftLeg'])
+ps.register_point_cloud("main_body", V[main_body_id], radius=r, color=[255 / 255, 164 / 255, 0])
+
+# 右手
+rightArm_and_hand_id = (vertex_groups["rightArm"] +
+                        vertex_groups["rightForeArm"] +
+                        vertex_groups["rightHand"] +
+                        vertex_groups["rightHandIndex1"])
+ps.register_point_cloud("rightArm_and_hand", V[rightArm_and_hand_id], radius=r, color=[0, 255 / 255, 37 / 255])
+
+# 左手
+leftArm_and_hand_id = (vertex_groups["leftArm"] +
+                       vertex_groups["leftForeArm"] +
+                       vertex_groups["leftHand"] +
+                       vertex_groups["leftHandIndex1"])
+ps.register_point_cloud("leftArm_and_hand", V[leftArm_and_hand_id], radius=r, color=[0, 255 / 255, 228 / 255])
+
+# 右脚
+right_foot_id = vertex_groups['rightFoot'] + vertex_groups['rightToeBase']
+ps.register_point_cloud("right_foot", V[right_foot_id], radius=r, color=[0, 255 / 255, 37 / 255])
+
+# 左脚
+left_foot_id = vertex_groups['leftFoot'] + vertex_groups['leftToeBase']
+ps.register_point_cloud("left_foot", V[left_foot_id], radius=r, color=[0, 255 / 255, 228 / 255])
+
+# 右腿
+right_leg_id = vertex_groups['rightUpLeg'] + vertex_groups['rightFoot'] + vertex_groups['rightToeBase'] + vertex_groups[
+    'rightLeg']
+ps.register_point_cloud("right_leg", V[right_leg_id], radius=r, color=[255 / 255, 0, 27 / 255])
+
+# 腰到膝盖
+spine_to_upleg_id = vertex_groups['rightUpLeg'] + vertex_groups['leftUpLeg'] + vertex_groups['hips'] + vertex_groups[
+    'spine']
+ps.register_point_cloud("spine_to_upleg", V[spine_to_upleg_id], radius=r, color=[255 / 255, 255 / 255, 0])
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+| ![](assets/Pasted%20image%2020261010150348.png) | ![](assets/Pasted%20image%2020261010150406.png) |
+| :---------------------------------------------: | :---------------------------------------------: |
+|                      拟合头部                       |                  方便测量胸围、腰围、臀围                   |
+| ![](assets/Pasted%20image%2020261010150456.png) | ![](assets/Pasted%20image%2020261010150507.png) |
+|                      拟合手部                       |                      拟合手部                       |
+| ![](assets/Pasted%20image%2020261010150524.png) | ![](assets/Pasted%20image%2020261010150535.png) |
+|                      拟合脚部                       |                      拟合脚部                       |
+| ![](assets/Pasted%20image%2020261010150554.png) | ![](assets/Pasted%20image%2020261010150609.png) |
+|                     拟合腰臀腿区域                     |                 方便测量大腿围、膝围、脚腕围等                 |
+
+### 3.4 区域顶点有重叠
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+import json
+
+np.set_printoptions(suppress=True)
+
+# 1、初始化star人体
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+
+# T姿态
+# poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+
+# A姿态
+A_pose_np = np.zeros((1, 72))
+A_pose_np[:, 3 * 1 + 2] = 0.1  # 右脚
+A_pose_np[:, 3 * 2 + 2] = -0.1  # 左脚
+A_pose_np[0, 3 * 13 + 2] = -0.2  # 左手
+A_pose_np[0, 3 * 14 + 2] = 0.2  # 右手
+A_pose_np[0, 3 * 16 + 2] = -0.8  # 左臂
+A_pose_np[0, 3 * 17 + 2] = 0.8  # 右臂
+
+poses = torch.cuda.FloatTensor(A_pose_np)
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+# 使用姿态参数poses、体形参数betas和平移向量trans，生成star人体
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+V = model[0].cpu().numpy()
+F = model.f.astype("int32")
+
+with open('smpl_vert_segmentation.json') as fin:
+    vertex_groups = json.load(fin)
+
+ps.init()
+ps.register_surface_mesh("smpl", V, F, color=np.array([0, 91, 255]) / 255,
+                         edge_color=[1, 1, 1], edge_width=0.1)
+
+r = 0.004
+ps.register_point_cloud("spine", V[vertex_groups["spine"]], radius=r, color=[255 / 255, 164 / 255, 0])
+ps.register_point_cloud("spine1", V[vertex_groups["spine1"]], radius=r, color=[255 / 255, 0, 218 / 255])
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+spine和spine1这两个区域边界上的项点是重叠的
+
+| ![](Pasted%20image%2020261010151521.png) | ![](Pasted%20image%2020261010151531.png) |
+| ---------------------------------------- | ---------------------------------------- |
+
+### 3.5 可视化右腿mesh
+根据右腿顶点id，选取右腿子mesh（面上三个顶点都包含）
+
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import json
+import torch
+import trimesh
+import polyscope as ps
+
+np.set_printoptions(suppress=True)
+
+# 1、初始化star人体
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+
+# T姿态
+# poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+
+# A姿态
+A_pose_np = np.zeros((1, 72))
+A_pose_np[:, 3 * 1 + 2] = 0.2  # 右腿
+A_pose_np[:, 3 * 2 + 2] = -0.2  # 左腿
+A_pose_np[0, 3 * 13 + 2] = -0.2  # 左手
+A_pose_np[0, 3 * 14 + 2] = 0.2  # 右手
+A_pose_np[0, 3 * 16 + 2] = -0.8  # 左臂
+A_pose_np[0, 3 * 17 + 2] = 0.8  # 右臂
+
+poses = torch.cuda.FloatTensor(A_pose_np)
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+# 使用姿态参数poses、体形参数betas和平移向量trans，生成star人体
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+V = model[0].cpu().numpy()
+F = model.f.astype("int32")
+
+# 测量三维人体尺寸--------------------------------------
+# 加载smpl顶点分区
+with open('smpl_vert_segmentation.json') as fin:
+    vertex_groups = json.load(fin)
+
+# 身体躯干的顶点 和 腿部 的顶点
+right_leg_vertex_id = (vertex_groups['rightUpLeg'] +
+                    vertex_groups['rightLeg'] +
+                    vertex_groups['rightFoot'] +
+                    vertex_groups['rightToeBase'])
+
+mesh = trimesh.Trimesh(V, F, process=False)
+
+
+# 根据顶点索引选取子mesh
+def get_mesh_from_vertex(vertex_id, mesh):
+    list_face_id = []
+    for face_id, face in enumerate(mesh.faces):
+        if face[0] in vertex_id and face[1] in vertex_id and face[2] in vertex_id:
+            list_face_id.append(face_id)
+
+    part_mesh = mesh.submesh([list_face_id], append=False)[0]
+    return part_mesh
+
+
+def get_mesh_from_vertex_2(vertex_id, mesh):
+    # 判断每个面的三个顶点是否属于指定顶点集合
+    vertex_mask = np.isin(mesh.faces, vertex_id)
+
+    # 只有当一个面的三个顶点都满足条件时，才保留该面
+    face_mask = np.all(vertex_mask, axis=1) # 面要包含3个点
+    # face_mask = np.any(vertex_mask, axis=1)  # 面只要包含1个点就行
+
+    # 提取子 mesh（process=True 会重新索引顶点）
+    submesh = mesh.submesh([np.where(face_mask)[0]], append=True, repair=False)
+    return submesh
+
+
+right_leg_mesh = get_mesh_from_vertex_2(right_leg_vertex_id, mesh)
+
+ps.init()
+ps.register_surface_mesh("mesh", V, F,
+                         # color=np.array([0, 91, 255]) / 255,
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.register_surface_mesh("right_leg_mesh", right_leg_mesh.vertices, right_leg_mesh.faces,
+                         # color=np.array([0, 91, 255]) / 255,
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.register_point_cloud("right_leg", V[right_leg_vertex_id], radius=0.004)
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+
+根据顶点索引选取子mesh
+```python
+
+# 根据顶点索引选取子mesh
+def get_mesh_from_vertex(vertex_id, mesh):
+    list_face_id = []
+    for face_id, face in enumerate(mesh.faces):
+        if face[0] in vertex_id and face[1] in vertex_id and face[2] in vertex_id:
+            list_face_id.append(face_id)
+
+    part_mesh = mesh.submesh([list_face_id], append=False)[0]
+    return part_mesh
+
+
+def get_mesh_from_vertex_2(vertex_id, mesh):
+    # 判断每个面的三个顶点是否属于指定顶点集合
+    vertex_mask = np.isin(mesh.faces, vertex_id)
+
+    # 只有当一个面的三个顶点都满足条件时，才保留该面
+    face_mask = np.all(vertex_mask, axis=1) # 面要包含3个点
+    # face_mask = np.any(vertex_mask, axis=1)  # 面只要包含1个点就行
+
+    # 提取子 mesh（process=True 会重新索引顶点）
+    submesh = mesh.submesh([np.where(face_mask)[0]], append=True, repair=False)
+    return submesh
+
+
+right_leg_mesh = get_mesh_from_vertex_2(right_leg_vertex_id, mesh)
+```
+
+|                                          |                                          |
+| :--------------------------------------: | :--------------------------------------: |
+| ![](Pasted%20image%2020261010152414.png) | ![](Pasted%20image%2020261010152745.png) |
+|                                          |             右腿顶点+选取的右腿子mesh              |
+
+
+### 3.6 可视化右腿mesh
+根据右腿顶点id，选取右腿子mesh（只要包含顶点id的面都选择）
+
+这种方式，会多选边界上的一些面
+
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import json
+import torch
+import trimesh
+import polyscope as ps
+
+np.set_printoptions(suppress=True)
+
+# 1、初始化star人体
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+
+# T姿态
+# poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+
+# A姿态
+A_pose_np = np.zeros((1, 72))
+A_pose_np[:, 3 * 1 + 2] = 0.2  # 右腿
+A_pose_np[:, 3 * 2 + 2] = -0.2  # 左腿
+A_pose_np[0, 3 * 13 + 2] = -0.2  # 左手
+A_pose_np[0, 3 * 14 + 2] = 0.2  # 右手
+A_pose_np[0, 3 * 16 + 2] = -0.8  # 左臂
+A_pose_np[0, 3 * 17 + 2] = 0.8  # 右臂
+
+poses = torch.cuda.FloatTensor(A_pose_np)
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+# 使用姿态参数poses、体形参数betas和平移向量trans，生成star人体
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+V = model[0].cpu().numpy()
+F = model.f.astype("int32")
+
+# 测量三维人体尺寸--------------------------------------
+# 加载smpl顶点分区
+with open('smpl_vert_segmentation.json') as fin:
+    vertex_groups = json.load(fin)
+
+# 身体躯干的顶点 和 腿部 的顶点
+right_leg_vertex_id = (vertex_groups['rightUpLeg'] +
+                    vertex_groups['rightLeg'] +
+                    vertex_groups['rightFoot'] +
+                    vertex_groups['rightToeBase'])
+
+mesh = trimesh.Trimesh(V, F, process=False)
+
+
+# 根据顶点索引选取子mesh
+def get_mesh_from_vertex(vertex_id, mesh):
+    list_face_id = []
+    for face_id, face in enumerate(mesh.faces):
+        if face[0] in vertex_id or face[1] in vertex_id or face[2] in vertex_id:
+            list_face_id.append(face_id)
+
+    part_mesh = mesh.submesh([list_face_id], append=False)[0]
+    return part_mesh
+
+
+def get_mesh_from_vertex_2(vertex_id, mesh):
+    # 判断每个面的三个顶点是否属于指定顶点集合
+    vertex_mask = np.isin(mesh.faces, vertex_id)
+
+    # 只有当一个面的三个顶点都满足条件时，才保留该面
+    # face_mask = np.all(vertex_mask, axis=1) # 面要包含3个点
+    face_mask = np.any(vertex_mask, axis=1)  # 面只要包含1个点就行
+
+    # 提取子 mesh（process=True 会重新索引顶点）
+    submesh = mesh.submesh([np.where(face_mask)[0]], append=True, repair=False)
+    return submesh
+
+
+right_leg_mesh = get_mesh_from_vertex_2(right_leg_vertex_id, mesh)
+
+ps.init()
+ps.register_surface_mesh("mesh", V, F,
+                         # color=np.array([0, 91, 255]) / 255,
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.register_surface_mesh("right_leg_mesh", right_leg_mesh.vertices, right_leg_mesh.faces,
+                         # color=np.array([0, 91, 255]) / 255,
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps.register_point_cloud("right_leg", V[right_leg_vertex_id], radius=0.004)
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+```
+
+
+
+根据顶点索引选取子mesh
+```python
+
+# 根据顶点索引选取子mesh
+def get_mesh_from_vertex(vertex_id, mesh):
+    list_face_id = []
+    for face_id, face in enumerate(mesh.faces):
+        if face[0] in vertex_id or face[1] in vertex_id or face[2] in vertex_id:
+            list_face_id.append(face_id)
+
+    part_mesh = mesh.submesh([list_face_id], append=False)[0]
+    return part_mesh
+
+
+def get_mesh_from_vertex_2(vertex_id, mesh):
+    # 判断每个面的三个顶点是否属于指定顶点集合
+    vertex_mask = np.isin(mesh.faces, vertex_id)
+
+    # 只有当一个面的三个顶点都满足条件时，才保留该面
+    # face_mask = np.all(vertex_mask, axis=1) # 面要包含3个点
+    face_mask = np.any(vertex_mask, axis=1)  # 面只要包含1个点就行
+
+    # 提取子 mesh（process=True 会重新索引顶点）
+    submesh = mesh.submesh([np.where(face_mask)[0]], append=True, repair=False)
+    return submesh
+
+
+right_leg_mesh = get_mesh_from_vertex_2(right_leg_vertex_id, mesh)
+```
+
+
+| ![](Pasted%20image%2020261010154605.png) | ![](Pasted%20image%2020261010154620.png) |
+| :--------------------------------------: | :--------------------------------------: |
+|                                          |         右腿顶点+选取的右腿子mesh(多选了一些面)          |
+
+
+
+### 3.7 将右腿面id写入json
+有了右腿面id，就可以快速选取右腿子mesh，从而用于尺寸测量
+
+```python
+import numpy as np
+import polyscope as ps
+import json
+import trimesh
+
+
+def get_faces_from_vertex(vertex_id, mesh):
+    # 判断每个面的三个顶点是否属于指定顶点集合
+    vertex_mask = np.isin(mesh.faces, vertex_id)
+
+    # 只有当一个面的三个顶点都满足条件时，才保留该面
+    # face_mask = np.all(vertex_mask, axis=1) # 面要包含3个点
+    face_mask = np.any(vertex_mask, axis=1)  # 面只要包含1个点就行
+
+    # 获取满足条件的面索引
+    face_ids = np.where(face_mask)[0]
+
+    return face_ids
+
+
+mesh = trimesh.load_mesh("star.obj")
+# 读取模型
+V, F = mesh.vertices, mesh.faces
+
+# 测量三维人体尺寸--------------------------------------
+# 加载smpl顶点分区
+with open('smpl_vert_segmentation.json') as fin:
+    vertex_groups = json.load(fin)
+
+right_leg_vertex_id = (vertex_groups['rightUpLeg'] +
+                       vertex_groups['rightLeg'] +
+                       vertex_groups['rightFoot'] +
+                       vertex_groups['rightToeBase'])
+
+right_leg_f_id = get_faces_from_vertex(right_leg_vertex_id, mesh)  # 用于测量大腿围、膝围、脚腕围
+
+print(right_leg_vertex_id)
+
+# 将大腿的面数据写入json
+with open("right_leg_f_id.json", "w") as fp:
+    json.dump(
+        right_leg_f_id.tolist(),
+        fp,
+        indent=4,
+        ensure_ascii=False
+    )
+
+ps.init()
+ps.register_surface_mesh("mesh", V, F,
+                         # color=np.array([0, 91, 255]) / 255,
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+ps.register_surface_mesh("right_leg_mesh", V, F[right_leg_f_id],
+                         # color=np.array([0, 91, 255]) / 255,
+                         edge_width=0.3,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](Pasted%20image%2020261010160141.png)
+
+## 4 star人体纹理
+
