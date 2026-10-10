@@ -1337,4 +1337,139 @@ ps.show()
 ![](assets/Pasted%20image%2020261010160141.png)
 
 ## 4 star人体纹理
+star人体与smpl人体的拓扑是一样的，所以uv和纹理可以通用
+
+```
+smpl_uv.obj和f_02_alb.002.png是在SMPL官方网站上下载的
+
+https://smpl.is.tue.mpg.de/index.html
+```
+
+#### 4.1.1 使用vertices法为smpl添加纹理
+add_color_quantity()
+
+```python
+import numpy as np
+import polyscope as ps
+import trimesh
+from PIL import Image
+
+# 使用vertices方法，为smpl人体添加uv纹理贴图
+mesh = trimesh.load("smpl_uv.obj", process=False, force='mesh')
+v, f = mesh.vertices, mesh.faces
+
+ps.init()
+# 1、可视mesh
+ps_mesh = ps.register_surface_mesh("mesh", v, f,
+                                   color=[0, 91 / 255, 255 / 255],
+                                   edge_width=0.001,
+                                   edge_color=[1, 1, 1],
+                                   smooth_shade=True,
+                                   # material="flat"
+                                   )
+
+# 2、添加参数化 (aka UV map)
+uv = mesh.visual.uv
+print(np.min(uv), np.max(uv))  # vt的值需要在0-1的范围内，如果不在这个范围内，可视化有问题
+ps_mesh.add_parameterization_quantity("uv", uv, defined_on='vertices', enabled=True)
+
+# 3、加载纹理贴图，将纹理贴图转化为颜色量
+uv_img = Image.open('f_02_alb.002.png')
+texture = np.asarray(uv_img)
+
+texture_color = texture[:, :, :3] / 255
+# 要加这一行，mesh材质颜色才能正常显示
+# 将sRGB颜色转换为线性空间 (Polyscope默认期望线性颜色)
+texture_color = np.power(texture_color, 2.2)  # gamma校正的逆运算
+
+# 4、在mesh上添加颜色量
+ps_mesh.add_color_quantity("texture", texture_color,
+                           defined_on='texture',
+                           param_name="uv",
+                           filter_mode='nearest',
+                           enabled=True)
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+0.0073 0.995324
+```
+
+| ![](assets/Pasted%20image%2020260915185329.png) | ![](assets/Pasted%20image%2020260915192423.png) |
+| :---------------------------------------------: | :---------------------------------------------: |
+|          ![](assets/f_02_alb.002.png)           |          ![](assets/f_01_nrm.002.png)           |
+|                       纹理图                       |                       法线图                       |
+
+
+#### 4.1.2 使用corners法为smpl添加纹理
+add_color_quantity()
+
+```python
+import igl
+import numpy as np
+import polyscope as ps
+from PIL import Image
+
+# 使用corners方法，为smpl人体添加uv纹理贴图
+
+v, vt, _, f, ft, _ = igl.readOBJ("smpl_uv.obj")
+
+ps.init()
+
+# 1、可视化mesh
+ps_mesh = ps.register_surface_mesh("mesh", v, f,
+                                   color=[0, 91/255, 255/ 255],
+                                   edge_width=0.001,
+                                   edge_color=[1, 1, 1],
+                                   smooth_shade=True,
+                                   # material="flat"
+                                   )
+
+# 2、添加参数化 (aka UV map)
+uv = vt[ft.reshape(-1)]
+print(np.min(uv), np.max(uv))  # uv的值需要在0-1的范围内，如果不在这个范围内，可视化有问题
+ps_mesh.add_parameterization_quantity("uv", uv, defined_on='corners', enabled=True)
+
+# 3、加载纹理贴图，将纹理贴图转化为颜色量
+uv_img = Image.open('f_02_alb.002.png')
+uv_img = np.asarray(uv_img)
+texture_map = uv_img[:, :, :3] / 255
+# 易错的点，有些rgba图包含透明度这个通道
+# 直接使用uv_img会出错，使用uv_img[:, :, :3]更合适
+
+# 要加这一行，mesh材质颜色才能正常显示
+# 将sRGB纹理转换到线性空间（去除gamma编码）
+texture_map = np.power(texture_map, 2.2)
+
+# 4、在mesh上添加颜色量
+ps_mesh.add_color_quantity("spot_texture", texture_map,
+                           defined_on='texture',
+                           param_name="uv",
+                           filter_mode='nearest',
+                           enabled=True)
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
 
