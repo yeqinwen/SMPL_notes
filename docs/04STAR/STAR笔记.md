@@ -440,7 +440,8 @@ ps.show()
 ### 2.7 可视化蒙皮权重-方法2
 
 配色参考这个代码：
-https://github.com/PeizhuoLi/neural-blend-shapes
+ 
+ https://github.com/PeizhuoLi/neural-blend-shapes
 
 ```python
 from star.pytorch.star import STAR
@@ -952,7 +953,7 @@ spine和spine1这两个区域边界上的项点是重叠的
 | ![](assets/Pasted%20image%2020261010151521.png) | ![](assets/Pasted%20image%2020261010151531.png) |
 | ----------------------------------------------- | ----------------------------------------------- |
 
-### 3.5 可视化右腿mesh
+### 3.5 可视化右腿mesh(all)
 根据右腿顶点id，选取右腿子mesh（面上三个顶点都包含）
 
 ```python
@@ -1102,7 +1103,7 @@ right_leg_mesh = get_mesh_from_vertex_2(right_leg_vertex_id, mesh)
 |                                                 |                 右腿顶点+选取的右腿子mesh                 |
 
 
-### 3.6 可视化右腿mesh
+### 3.6 可视化右腿mesh(any)
 根据右腿顶点id，选取右腿子mesh（只要包含顶点id的面都选择）
 
 这种方式，会多选边界上的一些面
@@ -1427,4 +1428,6 @@ ps.show()
 | :---------------------------------------------: | :---------------------------------------------: |
 |          ![](assets/f_02_alb.002.png)           |          ![](assets/f_01_nrm.002.png)           |
 |                       纹理图                       |                       法线图                       |
+
+### 4.2 保持纹理的star人体网格细分
 
