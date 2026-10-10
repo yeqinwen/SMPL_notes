@@ -601,6 +601,8 @@ f = model.f.astype("int32")
 ```
 
 ## 3 star人体分区
+下载star人体分区顶点索引文件
+[smpl_vert_segmentation.json](https://github.com/Meshcapade/wiki/blob/main/assets/SMPL_body_segmentation/smpl/smpl_vert_segmentation.json)
 
 ### 3.1 可视化star人体分区
 ```python
