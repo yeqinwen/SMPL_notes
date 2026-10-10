@@ -439,7 +439,8 @@ ps.show()
 
 ### 2.7 可视化蒙皮权重-方法2
 
-配色参考这个代码： https://github.com/PeizhuoLi/neural-blend-shapes
+配色参考这个代码：
+https://github.com/PeizhuoLi/neural-blend-shapes
 
 ```python
 from star.pytorch.star import STAR
