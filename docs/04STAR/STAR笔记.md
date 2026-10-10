@@ -1345,7 +1345,7 @@ smpl_uv.obj和f_02_alb.002.png是在SMPL官方网站上下载的
 https://smpl.is.tue.mpg.de/index.html
 ```
 
-#### 4.1.1 使用vertices法为smpl添加纹理
+### 4.1 使用vertices法为smpl添加纹理
 add_color_quantity()
 
 ```python
@@ -1413,7 +1413,7 @@ ps.show()
 |                       纹理图                       |                       法线图                       |
 
 
-#### 4.1.2 使用corners法为smpl添加纹理
+### 4.2 使用corners法为smpl添加纹理
 add_color_quantity()
 
 ```python
