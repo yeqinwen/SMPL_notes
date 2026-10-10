@@ -9,7 +9,7 @@
 
 代码：[ahmedosman/STAR: ECCV2020 - Official code repository for the paper : STAR - A Sparse Trained Articulated Human Body Regressor](https://github.com/ahmedosman/STAR)
 
-在`config.py`代码中设置models的路径
+在`config.py`代码中设置model的路径
 
 ```python
 path_male_star = r"D:\OneDrive - mail.dhu.edu.cn\obsidian笔记\数字几何处理\smpl人体相关\STAR\STAR-master\star\star_1_1\male\model.npz"
@@ -65,7 +65,7 @@ ps.show()
 
 ```
 
-![](Pasted%20image%2020261010084312.png)
+![](assets/Pasted%20image%2020261010084312.png)
 
 ### 2.2 调整姿态
 STAR人体的拓扑和关节点设置和SMPL人体是一样的
@@ -136,11 +136,11 @@ ps.show()
 
 ```
 
-![](Pasted%20image%2020261010092145.png)
+![](assets/Pasted%20image%2020261010092145.png)
 
 
 
-![](docs/04STAR/assets/Pasted%20image%2020260929143913.png)
+![](assets/Pasted%20image%2020260929143913.png)
 
 
 
@@ -288,7 +288,7 @@ ps.show()
 
 ```
 
-![](Pasted%20image%2020261010093637.png)
+![](assets/Pasted%20image%2020261010093637.png)
 
 
 ### 2.5 加载star人体model文件
@@ -433,9 +433,9 @@ ps.show()
 ```
 
 
-|          Dominant Joint Colors           |             Dominant Weight              |
-| :--------------------------------------: | :--------------------------------------: |
-| ![](Pasted%20image%2020261010103046.png) | ![](Pasted%20image%2020261010103114.png) |
+|              Dominant Joint Colors              |                 Dominant Weight                 |
+| :---------------------------------------------: | :---------------------------------------------: |
+| ![](assets/Pasted%20image%2020261010103046.png) | ![](assets/Pasted%20image%2020261010103114.png) |
 
 ### 2.7 可视化蒙皮权重-方法2
 
@@ -550,9 +550,9 @@ ps.show()
 
 
 
-|                 没有将颜色提亮                  |                  将颜色提亮                   |
-| :--------------------------------------: | :--------------------------------------: |
-| ![](Pasted%20image%2020261010104411.png) | ![](Pasted%20image%2020261010104433.png) |
+|                     没有将颜色提亮                     |                      将颜色提亮                      |
+| :---------------------------------------------: | :---------------------------------------------: |
+| ![](assets/Pasted%20image%2020261010104411.png) | ![](assets/Pasted%20image%2020261010104433.png) |
 
 ### 2.8 cuda加速
 **方法1**：将star模型和参数都添加device
