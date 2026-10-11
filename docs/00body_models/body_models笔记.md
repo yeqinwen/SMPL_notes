@@ -830,6 +830,29 @@ global_translation torch.Size([1, 3])
 ```
 
 
+| 参数                 | 形状       | 含义           |
+| ------------------ | -------- | ------------ |
+| shape              | [1,16]   | 体形参数         |
+| body_pose          | [1,21,3] | 21个身体关节的局部旋转 |
+| hand_pose          | [1,30,3] | 30个手部关节的局部旋转 |
+| pelvis_rotation    | [1,3]    | 骨盆旋转参数       |
+| global_rotation    | [1,3]    | 全局朝向         |
+| global_translation | [1,3]    | 人体整体平移       |
+
+```
+pelvis_rotation：改变骨盆根关节的局部姿态，并通过骨架层级影响身体其他关节。
+例如，骨盆前倾、后倾或侧倾，会影响躯干与下肢的相对姿态。
+
+global_rotation：对整个生成的人体施加全局旋转，改变人体在世界坐标系中的朝向。
+例如，让一个面朝前方的人整体转向左侧，而不是只改变骨盆相对身体的姿态。
+
+shape前10个是SMPL的体形参数，后6个是手部的形状参数
+pelvis_rotation + body_pose 等同于SMPL人体的24个关节的72个姿态参数
+global_translation 是人体的平移
+
+hand_pose 是SMPL人体添加了H后的手部姿态
+global_rotaion 不影响人体内部的骨骼，它控制人体在世界坐标系中的朝向
+```
 
 ### 3.5 可视化pose
 
