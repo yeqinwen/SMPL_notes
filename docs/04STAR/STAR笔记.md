@@ -1340,8 +1340,10 @@ ps.show()
 
 ![](assets/Pasted%20image%2020261010160141.png)
 
-## 4 star人体纹理
-star人体与smpl人体的拓扑是一样的，所以uv和纹理可以通用
+
+## 4 SMPL人体纹理
+
+我们使用的是smpl_uv.obj案例文件
 
 ```
 smpl_uv.obj和f_02_alb.002.png、f_01_nrm.002.png是在SMPL官方网站上下载的
@@ -1349,7 +1351,373 @@ smpl_uv.obj和f_02_alb.002.png、f_01_nrm.002.png是在SMPL官方网站上下载
 https://smpl.is.tue.mpg.de/index.html
 ```
 
-### 4.1 使用vertices法为smpl添加纹理
+
+### 4.1 smpl人体纹理-vertices
+trimesh加载模型，使用vertices法添加纹理
+
+```python
+import numpy as np
+import polyscope as ps
+import trimesh
+from PIL import Image
+
+# 使用vertices方法，为smpl人体添加uv纹理贴图
+mesh = trimesh.load("smpl_uv.obj", process=False, force='mesh')
+v, f = mesh.vertices, mesh.faces
+
+ps.init()
+# 1、可视mesh
+ps_mesh = ps.register_surface_mesh("mesh", v, f,
+                                   color=[0, 91 / 255, 255 / 255],
+                                   edge_width=0.001,
+                                   edge_color=[1, 1, 1],
+                                   smooth_shade=True,
+                                   # material="flat"
+                                   )
+
+# 2、添加参数化 (aka UV map)
+uv = mesh.visual.uv
+print(np.min(uv), np.max(uv))  # vt的值需要在0-1的范围内，如果不在这个范围内，可视化有问题
+ps_mesh.add_parameterization_quantity("uv", uv, defined_on='vertices', enabled=True)
+
+# 3、加载纹理贴图，将纹理贴图转化为颜色量
+uv_img = Image.open('f_02_alb.002.png')
+texture = np.asarray(uv_img)
+
+texture_color = texture[:, :, :3] / 255
+# 要加这一行，mesh材质颜色才能正常显示
+# 将sRGB颜色转换为线性空间 (Polyscope默认期望线性颜色)
+texture_color = np.power(texture_color, 2.2)  # gamma校正的逆运算
+
+# 4、在mesh上添加颜色量
+ps_mesh.add_color_quantity("texture", texture_color,
+                           defined_on='texture',
+                           param_name="uv",
+                           filter_mode='nearest',
+                           enabled=True)
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+```
+
+![](assets/Pasted%20image%2020261012112739.png)
+### 4.2 smpl人体纹理-corners
+igl加载模型，使用corners法添加纹理
+
+```python
+import igl
+import numpy as np
+import polyscope as ps
+from PIL import Image
+
+# 使用corners方法，为smpl人体添加uv纹理贴图
+
+v, vt, _, f, ft, _ = igl.readOBJ("smpl_uv.obj")
+
+ps.init()
+
+# 1、可视化mesh
+ps_mesh = ps.register_surface_mesh("mesh", v, f,
+                                   color=[0, 91/255, 255/ 255],
+                                   edge_width=0.001,
+                                   edge_color=[1, 1, 1],
+                                   smooth_shade=True,
+                                   # material="flat"
+                                   )
+
+# 2、添加参数化 (aka UV map)
+uv = vt[ft.reshape(-1)]
+print(np.min(uv), np.max(uv))  # uv的值需要在0-1的范围内，如果不在这个范围内，可视化有问题
+ps_mesh.add_parameterization_quantity("uv", uv, defined_on='corners', enabled=True)
+
+# 3、加载纹理贴图，将纹理贴图转化为颜色量
+uv_img = Image.open('f_02_alb.002.png')
+uv_img = np.asarray(uv_img)
+texture_map = uv_img[:, :, :3] / 255
+# 易错的点，有些rgba图包含透明度这个通道
+# 直接使用uv_img会出错，使用uv_img[:, :, :3]更合适
+
+# 要加这一行，mesh材质颜色才能正常显示
+# 将sRGB纹理转换到线性空间（去除gamma编码）
+texture_map = np.power(texture_map, 2.2)
+
+# 4、在mesh上添加颜色量
+ps_mesh.add_color_quantity("spot_texture", texture_map,
+                           defined_on='texture',
+                           param_name="uv",
+                           filter_mode='nearest',
+                           enabled=True)
+
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+```
+
+![](assets/Pasted%20image%2020261012112732.png)
+### 4.3 SMPL人体网络细分-保持纹理
+```python
+import trimesh
+import numpy as np
+import polyscope as ps
+from PIL import Image
+
+
+def get_subdivid_mesh(mesh):
+    # 1. 核心技巧：将UV坐标拼接到顶点坐标上
+    vertices_with_uv = np.hstack((mesh.vertices, mesh.visual.uv))
+
+    # 2. 调用底层细分函数
+    new_vertices_with_uv, new_faces = trimesh.remesh.subdivide(
+        vertices=vertices_with_uv,
+        faces=mesh.faces
+    )
+
+    # 3. 将细分后的数据拆分开
+    mesh.vertices = new_vertices_with_uv[:, :3]
+    mesh.visual.uv = new_vertices_with_uv[:, 3:]
+    mesh.faces = new_faces
+    return mesh
+
+
+mesh = trimesh.load('smpl_uv.obj')
+v = mesh.vertices
+uv = mesh.visual.uv
+f = mesh.faces
+
+print("原始mesh")
+print(v.shape, uv.shape, f.shape)
+
+# 细分
+mesh = get_subdivid_mesh(mesh)
+
+# 获得细后的uv数据和面数据，用于后续的可视化
+new_v = mesh.vertices
+new_uv = mesh.visual.uv
+new_f = mesh.faces
+
+print("细分mesh")
+print(new_v.shape, new_uv.shape, new_f.shape)
+
+ps.init()
+
+# 可视化细分后的人体
+new_body = ps.register_surface_mesh("new_body", new_v, new_f,
+                                    # color=np.array([0, 91, 255]) / 255,
+                                    edge_width=0.2,
+                                    edge_color=[1, 1, 1],
+                                    smooth_shade=True,
+                                    # material="flat"
+                                    )
+
+# 2、使用corners的方法，为smpl人体添加uv
+smpl_uv = new_uv[new_f.reshape(-1)]
+new_body.add_parameterization_quantity("uv", smpl_uv, defined_on='corners', enabled=True)
+
+# 3、加载纹理贴图
+uv_img = Image.open('f_02_alb.002.png')
+uv_img = np.asarray(uv_img)
+texture_map = uv_img[:, :, :3] / 255
+# 易错的点，有些rgba图包含透明度这个通道
+# 直接使用uv_img会出错，使用uv_img[:, :, :3]更合适
+
+# 4、对纹理图进行颜色处理
+# 要加这一行，mesh材质颜色才能正常显示
+# 将sRGB纹理转换到线性空间（去除gamma编码）
+texture_map = np.power(texture_map, 2.2)
+
+# 5、添加纹理图
+new_body.add_color_quantity("texture", texture_map,
+                            defined_on='texture',
+                            param_name="uv",
+                            filter_mode='nearest',
+                            enabled=True)
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+|                    SMPL人体+纹理                    |                   SMPL细分人体+纹理                   |
+| :---------------------------------------------: | :---------------------------------------------: |
+| ![](assets/Pasted%20image%2020261012105010.png) | ![](assets/Pasted%20image%2020261012104831.png) |
+
+
+
+## 5 star人体纹理
+star人体与smpl人体的拓扑是一样的，所以uv和纹理可以通用
+
+### 5.1 star人体纹理-vertices
+
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+from PIL import Image  # 用于读取纹理贴图
+import trimesh
+
+np.set_printoptions(suppress=True)
+
+
+def segment_star(smpl_uv, smpl_uf, star_v, star_f):
+    """
+    将 STAR 人体网格的顶点分割为与 SMPL UV 网格一致的顶点结构，
+    以便后续进行纹理映射与可视化。
+
+    Parameters
+    ----------
+    smpl_uv : np.ndarray, shape (N_uv, 3)
+        SMPL UV 网格的三维顶点坐标，通常包含 7576 个顶点。
+        这些顶点包含 UV 接缝处拆分得到的重复几何顶点。
+
+    smpl_uf : np.ndarray, shape (F, 3)
+        SMPL UV 网格的三角面索引，索引范围对应 smpl_uv。
+        每个三角面由 3 个 UV 网格顶点组成。
+
+    star_v : np.ndarray, shape (N_star, 3)
+        STAR 参数化人体的三维顶点坐标，通常包含 6890 个顶点。
+
+    star_f : np.ndarray, shape (F, 3)
+        STAR 人体的三角面索引，索引范围对应 star_v。
+        要求 star_f 与 smpl_uf 的面顺序及顶点对应关系一致，
+        以便利用对应面上的顶点索引完成坐标映射。
+
+    Returns
+    -------
+    new_star_v : np.ndarray, shape (N_uv, 3)
+        分割后的 STAR 人体顶点，顶点数量与 SMPL UV 网格一致。
+        UV 接缝处的重复顶点具有相同的三维坐标。
+
+    new_star_f : np.ndarray, shape (F, 3)
+        UV 网格的三角面索引，可直接用于构建分割后的 STAR 网格。
+    """
+
+    # 1. 获取 UV 网格的顶点数量
+    n_uv = smpl_uv.shape[0]
+
+    # 2. 确保 STAR 面索引为 NumPy 数组
+    star_f = np.asarray(star_f)
+
+    # 3. 展平两套网格的面索引，使对应三角面顶点能够逐一匹配
+    # uv_idx：UV 网格中的顶点索引，取值范围为 [0, n_uv)
+    # star_v_idx：STAR 网格中的顶点索引，取值范围为 [0, len(star_v))
+    uv_idx = smpl_uf.reshape(-1)
+    star_v_idx = star_f.reshape(-1)
+
+    # 4. 初始化分割后的 STAR 顶点数组
+    # 每个 UV 网格顶点都需要对应一个三维坐标
+    new_star_v = np.zeros((n_uv, 3), dtype=star_v.dtype)
+
+    # 5. 根据对应面上的顶点索引，将 STAR 顶点坐标映射到 UV 网格
+    # UV 接缝处的多个顶点可以映射到同一个 STAR 顶点，
+    # 从而在保留 UV 网格拓扑的同时，保持人体几何形状不变。
+    # 若同一个 UV 顶点被多次赋值，则最后一次赋值会覆盖之前的结果。
+    new_star_v[uv_idx] = star_v[star_v_idx]
+
+    # 6. 使用 UV 网格的面索引，保证新网格与 UV 网格拓扑一致
+    new_star_f = smpl_uf
+
+    return new_star_v, new_star_f
+
+
+# 阶段1：生成star人体
+###################################################
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+star_v = model[0].cpu().numpy()
+star_f = model.f.astype("int32")
+
+#########################################################
+# 加载smpl_uv.obj
+mesh = trimesh.load("smpl_uv.obj", process=False, force='mesh')
+smpl_v, smpl_f = mesh.vertices, mesh.faces
+uv = mesh.visual.uv
+
+print(smpl_v.shape, smpl_f.shape)  # (7576, 3) (13776, 3)
+print(uv.shape)  # (7576, 2)
+print(star_v.shape, star_f.shape)  # (6890, 3) (13776, 3)
+# 生成的Star人体是  (6890, 3) (13776, 3)
+# 为了匹配smpl_uv.obj的uv，需要对star人体进行重新分割
+# new_star_v, new_star_f变成(7576, 3) (13776, 3)
+
+new_star_v, new_star_f = segment_star(uv, smpl_f, star_v, star_f)
+
+ps.init()
+ps_mesh = ps.register_surface_mesh("mesh", new_star_v, new_star_f,
+                                   color=np.array([0, 91, 255]) / 255,
+                                   edge_width=0.003,
+                                   edge_color=[1, 1, 1],
+                                   smooth_shade=True,
+                                   # material="flat"
+                                   )
+
+ps_mesh.add_parameterization_quantity("uv", uv, defined_on='vertices', enabled=True)
+
+# 3、加载纹理贴图，将纹理贴图转化为颜色量
+uv_img = Image.open('f_02_alb.002.png')
+texture = np.asarray(uv_img)
+
+texture_color = texture[:, :, :3] / 255
+# 要加这一行，mesh材质颜色才能正常显示
+# 将sRGB颜色转换为线性空间 (Polyscope默认期望线性颜色)
+texture_color = np.power(texture_color, 2.2)  # gamma校正的逆运算
+
+# 4、在mesh上添加颜色量
+ps_mesh.add_color_quantity("texture", texture_color,
+                           defined_on='texture',
+                           param_name="uv",
+                           filter_mode='nearest',
+                           enabled=True)
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+![](assets/Pasted%20image%2020261012112716.png)
+
+### 5.2 star人体纹理-corners
 
 ```python
 from star.pytorch.star import STAR
@@ -1429,5 +1797,393 @@ ps.show()
 |          ![](assets/f_02_alb.002.png)           |          ![](assets/f_01_nrm.002.png)           |
 |                       纹理图                       |                       法线图                       |
 
-### 4.2 保持纹理的star人体网格细分
+### 5.3 star人体网格细分-保持纹理
 
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+from PIL import Image
+import trimesh
+
+np.set_printoptions(suppress=True)
+
+
+def segment_star(smpl_uv, smpl_uf, star_v, star_f):
+    """
+    将 STAR 人体网格的顶点分割为与 SMPL UV 网格一致的顶点结构，
+    以便后续进行纹理映射与可视化。
+
+    Parameters
+    ----------
+    smpl_uv : np.ndarray, shape (N_uv, 3)
+        SMPL UV 网格的三维顶点坐标，通常包含 7576 个顶点。
+        这些顶点包含 UV 接缝处拆分得到的重复几何顶点。
+
+    smpl_uf : np.ndarray, shape (F, 3)
+        SMPL UV 网格的三角面索引，索引范围对应 smpl_uv。
+        每个三角面由 3 个 UV 网格顶点组成。
+
+    star_v : np.ndarray, shape (N_star, 3)
+        STAR 参数化人体的三维顶点坐标，通常包含 6890 个顶点。
+
+    star_f : np.ndarray, shape (F, 3)
+        STAR 人体的三角面索引，索引范围对应 star_v。
+        要求 star_f 与 smpl_uf 的面顺序及顶点对应关系一致，
+        以便利用对应面上的顶点索引完成坐标映射。
+
+    Returns
+    -------
+    new_star_v : np.ndarray, shape (N_uv, 3)
+        分割后的 STAR 人体顶点，顶点数量与 SMPL UV 网格一致。
+        UV 接缝处的重复顶点具有相同的三维坐标。
+
+    new_star_f : np.ndarray, shape (F, 3)
+        UV 网格的三角面索引，可直接用于构建分割后的 STAR 网格。
+    """
+
+    # 1. 获取 UV 网格的顶点数量
+    n_uv = smpl_uv.shape[0]
+
+    # 2. 确保 STAR 面索引为 NumPy 数组
+    star_f = np.asarray(star_f)
+
+    # 3. 展平两套网格的面索引，使对应三角面顶点能够逐一匹配
+    # uv_idx：UV 网格中的顶点索引，取值范围为 [0, n_uv)
+    # star_v_idx：STAR 网格中的顶点索引，取值范围为 [0, len(star_v))
+    uv_idx = smpl_uf.reshape(-1)
+    star_v_idx = star_f.reshape(-1)
+
+    # 4. 初始化分割后的 STAR 顶点数组
+    # 每个 UV 网格顶点都需要对应一个三维坐标
+    new_star_v = np.zeros((n_uv, 3), dtype=star_v.dtype)
+
+    # 5. 根据对应面上的顶点索引，将 STAR 顶点坐标映射到 UV 网格
+    # UV 接缝处的多个顶点可以映射到同一个 STAR 顶点，
+    # 从而在保留 UV 网格拓扑的同时，保持人体几何形状不变。
+    # 若同一个 UV 顶点被多次赋值，则最后一次赋值会覆盖之前的结果。
+    new_star_v[uv_idx] = star_v[star_v_idx]
+
+    # 6. 使用 UV 网格的面索引，保证新网格与 UV 网格拓扑一致
+    new_star_f = smpl_uf
+
+    return new_star_v, new_star_f
+
+
+def get_subdivid_mesh(mesh):
+    # 1. 核心技巧：将UV坐标拼接到顶点坐标上
+    vertices_with_uv = np.hstack((mesh.vertices, mesh.visual.uv))
+
+    # 2. 调用底层细分函数
+    new_vertices_with_uv, new_faces = trimesh.remesh.subdivide(
+        vertices=vertices_with_uv,
+        faces=mesh.faces
+    )
+
+    # 3. 将细分后的数据拆分开
+    mesh.vertices = new_vertices_with_uv[:, :3]
+    mesh.visual.uv = new_vertices_with_uv[:, 3:]
+    mesh.faces = new_faces
+    return mesh
+
+
+# 1、生成star人体
+###################################################
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+star_v = model[0].cpu().numpy()
+star_f = model.f.astype("int32")
+
+print(star_v.shape,star_f.shape)
+
+# 2、加载smpl_uv.obj，用于设置uv
+mesh = trimesh.load("smpl_uv.obj", process=False, force='mesh')
+smpl_v, smpl_f = mesh.vertices, mesh.faces
+uv = mesh.visual.uv
+
+# 3、对star人体进行分割
+# 生成的Star人体是  (6890, 3) (13776, 3)
+# 为了匹配smpl_uv.obj的uv，需要对star人体进行重新分割
+# new_star_v, new_star_f变成(7576, 3) (13776, 3)
+new_star_v, new_star_f = segment_star(uv, smpl_f, star_v, star_f)
+
+# 4、分割完之后，创建star_mesh，并且添加uv，然后对star_mesh进行细分
+star_mesh = trimesh.Trimesh(vertices=new_star_v, faces=new_star_f, process=False)
+star_mesh.visual = trimesh.visual.TextureVisuals(uv=uv)
+
+# 5、对star_mesh进行细分
+mesh = get_subdivid_mesh(star_mesh)
+
+# 获得细后的uv数据和面数据，用于后续的可视化
+new_v = mesh.vertices
+new_uv = mesh.visual.uv
+new_f = mesh.faces
+print("细分mesh")
+print(new_v.shape, new_uv.shape, new_f.shape)
+
+ps.init()
+
+# 可视化细分后的人体
+new_body = ps.register_surface_mesh("new_body", new_v, new_f,
+                                    # color=np.array([0, 91, 255]) / 255,
+                                    edge_width=0.2,
+                                    edge_color=[1, 1, 1],
+                                    smooth_shade=True,
+                                    # material="flat"
+                                    )
+
+# 2、使用corners的方法，为smpl人体添加uv
+smpl_uv = new_uv[new_f.reshape(-1)]
+new_body.add_parameterization_quantity("uv", smpl_uv, defined_on='corners', enabled=True)
+
+# 3、加载纹理贴图
+uv_img = Image.open('f_02_alb.002.png')
+uv_img = np.asarray(uv_img)
+texture_map = uv_img[:, :, :3] / 255
+# 易错的点，有些rgba图包含透明度这个通道
+# 直接使用uv_img会出错，使用uv_img[:, :, :3]更合适
+
+# 4、对纹理图进行颜色处理
+# 要加这一行，mesh材质颜色才能正常显示
+# 将sRGB纹理转换到线性空间（去除gamma编码）
+texture_map = np.power(texture_map, 2.2)
+
+# 5、添加纹理图
+new_body.add_color_quantity("texture", texture_map,
+                            defined_on='texture',
+                            param_name="uv",
+                            filter_mode='nearest',
+                            enabled=True)
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200, 800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```python
+(6890, 3) (13776, 3)
+细分mesh
+(28920, 3) (28920, 2) (55104, 3)
+```
+
+|                    SMPL人体+纹理                    |                   SMPL细分人体+纹理                   |
+| :---------------------------------------------: | :---------------------------------------------: |
+| ![](assets/Pasted%20image%2020261012105010.png) | ![](assets/Pasted%20image%2020261012104831.png) |
+|                                                 |                                                 |
+
+### 5.4 分割star人体
+
+smpl_uv.obj的顶点v和uv都是(7576, 3)
+
+但是生成的star人体顶点是(6890, 3)，因此需要对star_v进行分割，使其变成(7576, 3)，从而可以使用uv和纹理
+
+```python
+print(smpl_v.shape, smpl_f.shape)  # (7576, 3) (13776, 3)
+print(uv.shape)  # (7576, 2)
+print(star_v.shape, star_f.shape)  # (6890, 3) (13776, 3)
+# 生成的Star人体是  (6890, 3) (13776, 3)
+# 为了匹配smpl_uv.obj的uv，需要对star人体进行重新分割
+# new_star_v, new_star_f变成(7576, 3) (13776, 3)
+```
+
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+import trimesh
+
+np.set_printoptions(suppress=True)
+
+
+def segment_star(smpl_uv, smpl_uf, star_v, star_f):
+    """
+    将 STAR 人体网格的顶点分割为与 SMPL UV 网格一致的顶点结构，
+    以便后续进行纹理映射与可视化。
+
+    Parameters
+    ----------
+    smpl_uv : np.ndarray, shape (N_uv, 3)
+        SMPL UV 网格的三维顶点坐标，通常包含 7576 个顶点。
+        这些顶点包含 UV 接缝处拆分得到的重复几何顶点。
+
+    smpl_uf : np.ndarray, shape (F, 3)
+        SMPL UV 网格的三角面索引，索引范围对应 smpl_uv。
+        每个三角面由 3 个 UV 网格顶点组成。
+
+    star_v : np.ndarray, shape (N_star, 3)
+        STAR 参数化人体的三维顶点坐标，通常包含 6890 个顶点。
+
+    star_f : np.ndarray, shape (F, 3)
+        STAR 人体的三角面索引，索引范围对应 star_v。
+        要求 star_f 与 smpl_uf 的面顺序及顶点对应关系一致，
+        以便利用对应面上的顶点索引完成坐标映射。
+
+    Returns
+    -------
+    new_star_v : np.ndarray, shape (N_uv, 3)
+        分割后的 STAR 人体顶点，顶点数量与 SMPL UV 网格一致。
+        UV 接缝处的重复顶点具有相同的三维坐标。
+
+    new_star_f : np.ndarray, shape (F, 3)
+        UV 网格的三角面索引，可直接用于构建分割后的 STAR 网格。
+    """
+
+    # 1. 获取 UV 网格的顶点数量
+    n_uv = smpl_uv.shape[0]
+
+    # 2. 确保 STAR 面索引为 NumPy 数组
+    star_f = np.asarray(star_f)
+
+    # 3. 展平两套网格的面索引，使对应三角面顶点能够逐一匹配
+    # uv_idx：UV 网格中的顶点索引，取值范围为 [0, n_uv)
+    # star_v_idx：STAR 网格中的顶点索引，取值范围为 [0, len(star_v))
+    uv_idx = smpl_uf.reshape(-1)
+    star_v_idx = star_f.reshape(-1)
+
+    # 4. 初始化分割后的 STAR 顶点数组
+    # 每个 UV 网格顶点都需要对应一个三维坐标
+    new_star_v = np.zeros((n_uv, 3), dtype=star_v.dtype)
+
+    # 5. 根据对应面上的顶点索引，将 STAR 顶点坐标映射到 UV 网格
+    # UV 接缝处的多个顶点可以映射到同一个 STAR 顶点，
+    # 从而在保留 UV 网格拓扑的同时，保持人体几何形状不变。
+    # 若同一个 UV 顶点被多次赋值，则最后一次赋值会覆盖之前的结果。
+    new_star_v[uv_idx] = star_v[star_v_idx]
+
+    # 6. 使用 UV 网格的面索引，保证新网格与 UV 网格拓扑一致
+    new_star_f = smpl_uf
+
+    return new_star_v, new_star_f
+
+
+# 1、生成star人体
+###################################################
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+star_v = model[0].cpu().numpy()
+star_f = model.f.astype("int32")
+
+# 2、加载smpl_uv.obj，用于设置uv
+mesh = trimesh.load("smpl_uv.obj", process=False, force='mesh')
+smpl_v, smpl_f = mesh.vertices, mesh.faces
+uv = mesh.visual.uv
+
+# 3、对生成的star人体进行分割
+new_star_v, new_star_f = segment_star(uv, smpl_f, star_v, star_f)
+
+print(star_v.shape,star_f.shape)
+print(new_star_v.shape,new_star_f.shape)
+
+ps.init()
+ps_mesh = ps.register_surface_mesh("mesh", new_star_v, new_star_f,
+                                   color=np.array([0, 91, 255]) / 255,
+                                   edge_width=0.3,
+                                   edge_color=[1, 1, 1],
+                                   smooth_shade=True,
+                                   # material="flat"
+                                   )
+
+ps.set_build_gui(False)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+打印：
+```
+(6890, 3) (13776, 3)
+(7576, 3) (13776, 3)
+```
+
+
+## 6 人体截面提取
+
+### 6.1 polyscope人体平面切割 
+
+```python
+from star.pytorch.star import STAR
+import numpy as np
+import torch
+import polyscope as ps
+
+np.set_printoptions(suppress=True)
+
+batch_size = 1
+num_betas = 300  # 设置使用多少个主成分10 20 300
+poses = torch.cuda.FloatTensor(np.zeros((batch_size, 72)))
+betas = torch.cuda.FloatTensor(np.zeros((batch_size, num_betas)))
+trans = torch.cuda.FloatTensor(np.zeros((batch_size, 3)))
+
+star = STAR(gender='female', num_betas=num_betas)
+model = star.forward(poses, betas, trans)
+v = model[0].cpu().numpy()
+f = model.f.astype("int32")
+
+ps.init()
+ps.register_surface_mesh("mesh", v, f,
+                         color=np.array([0, 91, 255]) / 255,
+                         edge_width=0.001,
+                         edge_color=[1, 1, 1],
+                         smooth_shade=True,
+                         # material="flat"
+                         )
+
+ps_plane = ps.add_scene_slice_plane()
+ps_plane.set_pose([0, v[3500][1], 0], [0, 1, 0]) # xz平面
+# ps_plane.set_pose([v[3500][0], 0, 0], [1,0, 0]) # yz平面
+
+ps_plane.set_draw_plane(True)  # render the semi-transparent gridded plane
+ps_plane.set_draw_widget(True)
+
+# ps.set_build_gui(False)
+ps.set_window_size(1200,800)
+ps.set_view_projection_mode("perspective")  # orthographic 正交投影   perspective 透视投影
+# ps.set_navigation_style("planar")  # ['turntable','free','planar','none','first_person']
+ps.set_ground_plane_mode("shadow_only")  # ['none','tile','tile_reflection','shadow_only']
+# ps.set_ground_plane_height(-0.001)  # 设置地平面高度
+ps.set_shadow_blur_iters(3)  # 设置地平面阴影模糊程度
+ps.set_shadow_darkness(0.5)  # 设置地平面阴影明暗程度
+ps.set_up_dir("y_up")  # 设置y轴正方向向上（这个和设置视角会冲突，因此在添加视角参数时，这一行要注释掉）
+ps.set_front_dir('z_front')  # 设置z轴正方向向前
+ps.set_SSAA_factor(4)  # 在截图时，设置为4时，截图会更清晰
+ps.show()
+
+```
+
+
+|                      xz平面                       |                      yz平面                       |
+| :---------------------------------------------: | :---------------------------------------------: |
+| ![](assets/Pasted%20image%2020261012095316.png) | ![](assets/Pasted%20image%2020261012095409.png) |
